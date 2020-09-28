@@ -1,0 +1,19 @@
+{
+  "name": "influencers-transit-map",
+  "version": "0.1.0",
+  "description": "A timeline of comedians and how they relate to one another.",
+  "main": "index.js",
+  "repository": "https://github.com/mcmire/influencers-transit-map",
+  "author": "Elliot Winkler <elliot.winkler@gmail.com>",
+  "license": "unlicense",
+  "private": true,
+  "scripts": {
+    "start-dev": "snowpack dev --reload",
+    "build": "snowpack build"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.11.6",
+    "prettier": "^2.1.2",
+    "snowpack": "^2.12.1"
+  }
+}
