@@ -5,15 +5,15 @@ import styles from "./Companies.css";
 export default function Companies({ view }) {
   return (
     <g transform={`translate(0 ${view.padding.y + view.xAxis.marginBottom})`}>
-      {view.companies.slice(0, 1).map((company, companyIndex) => {
+      {view.companies.map((company, companyIndex) => {
         const y = (company.height + company.marginBottom) * companyIndex;
         return (
           <g key={companyIndex} transform={`translate(0 ${y})`}>
             <text
               x={company.name.x}
-              y={company.name.y}
               className={`font-main ${styles.companyName}`}
               fontSize={`${company.name.fontSize}px`}
+              textAnchor="middle"
             >
               {company.name.label}
             </text>

@@ -1,4 +1,4 @@
-import { max, min, range } from "lodash";
+import { max, min, range, sum } from "lodash";
 import {
   getDayOfYear,
   getDaysInMonth,
@@ -9,7 +9,6 @@ import {
 
 import emsToPixels from "./emsToPixels";
 
-//const YEARS = 1000 * 60 * 60 * 24 * 365;
 const X_TICK_DIVISION = 5; // years
 
 function roundToNearest(number, division) {
@@ -84,77 +83,89 @@ function buildXAxis(model, { width, padding }) {
 }
 
 function buildCompanies(model, mapToX) {
-  return model.companies.map((companyModel) => {
+  return model.companies.reduce((companies, companyModel) => {
     const relationships = model.relationships.filter(
       (relationship) => relationship.company === companyModel.id
     );
 
-    const companyNameView = {};
-    companyNameView.label = companyModel.name;
-    companyNameView.fontSize = emsToPixels(1.8);
-    companyNameView.lineHeight = companyNameView.fontSize;
-    companyNameView.marginBottom = emsToPixels(0.25, {
-      relativeTo: companyNameView.fontSize,
-    });
+    if (relationships.length > 0) {
+      const companyNameView = {};
+      companyNameView.label = companyModel.name;
+      companyNameView.fontSize = emsToPixels(1.6);
+      companyNameView.lineHeight = companyNameView.fontSize;
+      companyNameView.marginBottom = emsToPixels(0.5, {
+        relativeTo: companyNameView.fontSize,
+      });
 
-    const playerPaddingBottom = 50;
+      const playerPaddingBottom = emsToPixels(1.25, companyNameView.fontSize);
 
-    const playerViews = relationships.reduce(
-      (array, relationship, relationshipIndex) => {
-        const lastPlayerView =
-          array.length > 0 ? array[array.length - 1] : null;
-        const person = model.people.find(
-          (person) => person.id === relationship.player
-        );
-        if (person == null) {
-          throw new Error(`Could not find person by ${relationship.player}`);
-        }
-        const name = {};
-        const roles = {};
-        const marker = {};
+      const playerViews = relationships.reduce(
+        (array, relationship, relationshipIndex) => {
+          const lastPlayerView =
+            array.length > 0 ? array[array.length - 1] : null;
+          const person = model.people.find(
+            (person) => person.id === relationship.player
+          );
+          if (person == null) {
+            throw new Error(`Could not find person by ${relationship.player}`);
+          }
+          const name = {};
+          const roles = {};
+          const marker = {};
 
-        name.y =
-          companyNameView.lineHeight +
-          companyNameView.marginBottom +
-          (lastPlayerView != null
-            ? (lastPlayerView.height + playerPaddingBottom) * relationshipIndex
-            : 0);
-        name.label = person.name;
-        name.fontSize = emsToPixels(1);
-        name.lineHeight = emsToPixels(1.2, { relativeTo: name.fontSize });
+          name.y =
+            companyNameView.lineHeight +
+            companyNameView.marginBottom +
+            (lastPlayerView != null
+              ? (lastPlayerView.height + playerPaddingBottom) *
+                relationshipIndex
+              : 0);
+          name.label = person.name;
+          name.fontSize = emsToPixels(1);
+          name.lineHeight = emsToPixels(1.2, { relativeTo: name.fontSize });
 
-        roles.y = name.y + name.lineHeight;
-        roles.fontSize = emsToPixels(0.8);
-        roles.label = relationship.roles.join(", ");
-        roles.lineHeight = emsToPixels(1.2, { relativeTo: roles.fontSize });
+          roles.y = name.y + name.lineHeight;
+          roles.fontSize = emsToPixels(0.8);
+          roles.label = relationship.roles.join(", ");
+          roles.lineHeight = emsToPixels(1.2, { relativeTo: roles.fontSize });
 
-        marker.x = mapToX(relationship.dateRange.start);
-        marker.y = roles.y - (roles.y - name.y) / 2;
-        marker.radius = 10;
+          marker.x = mapToX(relationship.dateRange.start);
+          marker.y = roles.y - (roles.y - name.y) / 2;
+          marker.radius = 10;
 
-        name.x = marker.x - marker.radius - 10;
-        roles.x = marker.x - marker.radius - 10;
+          name.x = marker.x - marker.radius - 10;
+          roles.x = marker.x - marker.radius - 10;
 
-        const height = name.lineHeight + roles.lineHeight;
+          const height = name.lineHeight + roles.lineHeight;
 
-        return array.concat([{ height, marker, name, roles }]);
-      },
-      []
-    );
+          return array.concat([{ height, marker, name, roles }]);
+        },
+        []
+      );
 
-    const height =
-      companyNameView.lineHeight +
-      playerViews.reduce((sum, playerView) => {
-        return playerView.name.lineHeight + playerView.roles.lineHeight;
-      }, 0);
+      const markerXs = playerViews.map((playerView) => playerView.marker.x);
+      companyNameView.x = sum(markerXs) / markerXs.length;
 
-    return {
-      name: companyNameView,
-      players: playerViews,
-      height: height,
-      marginBottom: 20,
-    };
-  });
+      const lastPlayerView =
+        playerViews.length > 0 ? playerViews[playerViews.length - 1] : null;
+      // NOTE: This isn't totally accurate but it's good enough for now
+      const height =
+        lastPlayerView != null
+          ? lastPlayerView.roles.y + lastPlayerView.roles.lineHeight
+          : 0;
+
+      return companies.concat([
+        {
+          name: companyNameView,
+          players: playerViews,
+          height: height,
+          marginBottom: emsToPixels(4),
+        },
+      ]);
+    } else {
+      return companies;
+    }
+  }, []);
 }
 
 export default function prepareView(model, { width, height, padding }) {
