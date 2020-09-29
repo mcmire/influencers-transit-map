@@ -1,4 +1,4 @@
-import { max, min, range, sum } from "lodash";
+import { max, min, range, sortBy, sum } from "lodash";
 import {
   getDayOfYear,
   getDaysInMonth,
@@ -83,12 +83,41 @@ function buildXAxis(model, { width, padding }) {
 }
 
 function buildCompanies(model, mapToX) {
-  return model.companies.reduce((companies, companyModel) => {
-    const relationships = model.relationships.filter(
-      (relationship) => relationship.company === companyModel.id
-    );
+  const companiesWithRelationships = model.companies.reduce(
+    (companies, company) => {
+      const relationships = model.relationships.filter(
+        (relationship) => relationship.company === company.id
+      );
 
-    if (relationships.length > 0) {
+      if (relationships.length > 0) {
+        return [
+          ...companies,
+          {
+            ...company,
+            relationships: sortBy(relationships, (relationship) =>
+              relationship.dateRange.start.getTime()
+            ),
+          },
+        ];
+      } else {
+        return companies;
+      }
+    },
+    []
+  );
+
+  const sortedCompaniesWithRelationships = sortBy(
+    companiesWithRelationships,
+    (company) =>
+      min(
+        company.relationships.map((relationship) =>
+          relationship.dateRange.start.getTime()
+        )
+      )
+  );
+
+  if (sortedCompaniesWithRelationships.length > 0) {
+    return sortedCompaniesWithRelationships.map((companyModel) => {
       const companyNameView = {};
       companyNameView.label = companyModel.name;
       companyNameView.fontSize = emsToPixels(1.6);
@@ -99,7 +128,7 @@ function buildCompanies(model, mapToX) {
 
       const playerPaddingBottom = emsToPixels(1.25, companyNameView.fontSize);
 
-      const playerViews = relationships.reduce(
+      const playerViews = companyModel.relationships.reduce(
         (array, relationship, relationshipIndex) => {
           const lastPlayerView =
             array.length > 0 ? array[array.length - 1] : null;
@@ -154,18 +183,16 @@ function buildCompanies(model, mapToX) {
           ? lastPlayerView.roles.y + lastPlayerView.roles.lineHeight
           : 0;
 
-      return companies.concat([
-        {
-          name: companyNameView,
-          players: playerViews,
-          height: height,
-          marginBottom: emsToPixels(4),
-        },
-      ]);
-    } else {
-      return companies;
-    }
-  }, []);
+      return {
+        name: companyNameView,
+        players: playerViews,
+        height: height,
+        marginBottom: emsToPixels(4),
+      };
+    });
+  } else {
+    return companiesWithRelationships;
+  }
 }
 
 export default function prepareView(model, { width, height, padding }) {
