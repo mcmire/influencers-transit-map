@@ -1,2 +1,11 @@
-.root {
+.companyName {
+  font-weight: 500;
+}
+
+.playerName {
+}
+
+.playerRoles {
+  font-size: 0.8em;
+  font-style: italic;
 }

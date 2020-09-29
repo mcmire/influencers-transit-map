@@ -7,28 +7,28 @@ export default function TimelineAxis({ view }) {
   return (
     <g>
       <line
-        x1={view.padding}
-        y1={view.padding}
-        x2={view.width - view.padding}
-        y2={view.padding}
+        x1={view.padding.x}
+        y1={view.padding.y}
+        x2={view.width - view.padding.x}
+        y2={view.padding.y}
         stroke="black"
       />
-      {view.xAxisTicks.map((tick, index) => {
+      {view.xAxis.ticks.map((tick, index) => {
         return (
           <React.Fragment key={`tick-${index}`}>
             <line
               key={`tick-${index}-line`}
               x1={tick.x}
-              y1={view.padding - 10}
+              y1={view.padding.y - 10}
               x2={tick.x}
-              y2={view.padding}
+              y2={view.padding.y}
               stroke="black"
             />
             <text
-              className={styles.text}
+              className={`font-main ${styles.text}`}
               key={`tick-${index}-text`}
               x={tick.x}
-              y={view.padding - 15}
+              y={view.padding.y - 15}
               textAnchor="middle"
             >
               {tick.label}

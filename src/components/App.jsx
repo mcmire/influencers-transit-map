@@ -10,7 +10,7 @@ import Routes from "./Routes";
 
 const width = 1000;
 const height = 1000;
-const padding = 50;
+const padding = { x: 75, y: 50 };
 const view = prepareView(prepareModel(model), { width, height, padding });
 
 export default function App() {

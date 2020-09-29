@@ -3,105 +3,71 @@ import React from "react";
 const companies = [
   {
     id: "harvard-lampoon",
-    name() {
-      return <em>Harvard Lampoon</em>;
-    },
+    name: "*Harvard Lampoon*",
   },
   {
     id: "the-wilton-north-report",
-    name() {
-      return <em>The Wilton North Report</em>;
-    },
+    name: "*The Wilton North Report*",
   },
   {
     id: "not-necessarily-the-news",
-    name() {
-      return <em>Not Necessarily the News</em>;
-    },
+    name: "*Not Necessarily the News*",
   },
   {
     id: "second-city-chicago",
-    name() {
-      return "Second City Chicago";
-    },
+    name: "Second City Chicago",
   },
   {
     id: "happy-happy-good-show",
-    name() {
-      return <em>Happy Happy Good Show</em>;
-    },
+    name: "*Happy Happy Good Show*",
   },
   {
     id: "snl",
-    name() {
-      return <em>Saturday Night Live</em>;
-    },
+    name: "*Saturday Night Live*",
   },
   {
     id: "simpsons",
-    name() {
-      return <em>The Simpsons</em>;
-    },
+    name: "*The Simpsons*",
   },
   {
     id: "catch-a-rising-star",
-    name() {
-      return "Catch a Rising Star comedy scene";
-    },
+    name: "Catch a Rising Star comedy scene",
   },
   {
     id: "the-ben-stiller-show",
-    name() {
-      return <em>The Ben Stiller Show</em>;
-    },
+    name: "*The Ben Stiller Show*",
   },
   {
     id: "late-night-with-conan-o-brien",
-    name() {
-      return <em>Late Night with Conan O'Brien</em>;
-    },
+    name: "*Late Night with Conan O'Brien*",
   },
   {
     id: "mr-show",
-    name() {
-      return <em>Mr. Show</em>;
-    },
+    name: "*Mr. Show*",
   },
   {
     id: "the-dana-carvey-show",
-    name() {
-      return <em>The Dana Carvey Show</em>;
-    },
+    name: "*The Dana Carvey Show*",
   },
   {
     id: "the-daily-show",
-    name() {
-      return <em>The Daily Show</em>;
-    },
+    name: "*The Daily Show*",
   },
   {
     id: "madtv",
-    name() {
-      return <em>madTV</em>;
-    },
+    name: "*madTV*",
   },
   {
     id: "scrubs",
-    name() {
-      return <em>Scrubs</em>;
-    },
+    name: "*Scrubs*",
   },
   {
     id: "arrested-development",
-    name() {
-      return <em>Arrested Development</em>;
-    },
+    name: "*Arrested Development*",
   },
   {
     id: "The Larry Sanders Show",
-    name() {
-      return <em>The Larry Sanders Show</em>;
-    },
+    name: "*The Larry Sanders Show*",
   },
 ];
 

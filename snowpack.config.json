@@ -3,5 +3,8 @@
     "public": "/",
     "src": "/_dist_"
   },
-  "plugins": []
+  "plugins": [],
+  "install": [
+    "reset.css"
+  ]
 }
