@@ -3,7 +3,7 @@ import React from "react";
 import model from "../model";
 import prepareModel from "../util/prepareModel";
 import prepareView from "../util/prepareView";
-import styles from "./App.module.css";
+import styles from "./App.css";
 import TimelineAxis from "./TimelineAxis";
 import Companies from "./Companies";
 import Routes from "./Routes";

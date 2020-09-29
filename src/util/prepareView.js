@@ -1,4 +1,4 @@
-import { max, min, range } from "lodash-es";
+import { max, min, range } from "lodash";
 import {
   getDayOfYear,
   getDaysInMonth,

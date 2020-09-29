@@ -1,6 +1,6 @@
 import React from "react";
 
-import styles from "./Companies.module.css";
+import styles from "./Companies.css";
 
 export default function Companies({ view }) {
   return (

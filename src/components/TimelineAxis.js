@@ -1,7 +1,7 @@
-import { min, max } from "lodash-es";
+import { min, max } from "lodash";
 import React from "react";
 
-import styles from "./TimelineAxis.module.css";
+import styles from "./TimelineAxis.css";
 
 export default function TimelineAxis({ view }) {
   return (
