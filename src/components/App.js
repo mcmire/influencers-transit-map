@@ -22,8 +22,8 @@ export default function App() {
       viewBox={`0 0 ${view.width} ${view.height}`}
     >
       <TimelineAxis view={view} />
-      <Companies view={view} />
       <Routes view={view} />
+      <Companies view={view} />
     </svg>
   );
 }

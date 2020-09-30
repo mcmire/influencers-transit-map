@@ -4,45 +4,58 @@ import styles from "./Companies.css";
 
 export default function Companies({ view }) {
   return (
-    <g transform={`translate(0 ${view.padding.y + view.xAxis.marginBottom})`}>
-      {view.companies.map((company, companyIndex) => {
-        const y = (company.height + company.marginBottom) * companyIndex;
+    <g>
+      {view.companies.map((companyView, companyIndex) => {
+        const y =
+          (companyView.height + companyView.marginBottom) * companyIndex;
         return (
-          <g key={companyIndex} transform={`translate(0 ${y})`}>
+          <g key={companyIndex}>
             <text
-              x={company.name.x}
+              x={companyView.name.x}
+              y={companyView.name.y}
               className={`font-main ${styles.companyName}`}
-              fontSize={`${company.name.fontSize}px`}
+              fontSize={`${companyView.name.fontSize}px`}
+              textAnchor="middle"
+              stroke="white"
+              strokeWidth={3}
+            >
+              {companyView.name.label}
+            </text>
+            <text
+              x={companyView.name.x}
+              y={companyView.name.y}
+              className={`font-main ${styles.companyName}`}
+              fontSize={`${companyView.name.fontSize}px`}
               textAnchor="middle"
             >
-              {company.name.label}
+              {companyView.name.label}
             </text>
-            {company.players.map((player, playerIndex) => {
+            {companyView.players.map((playerView, playerIndex) => {
               return (
                 <g key={playerIndex}>
                   <circle
-                    cx={player.marker.x}
-                    cy={player.marker.y}
-                    r={player.marker.radius}
-                    fill="red"
+                    cx={playerView.marker.x}
+                    cy={playerView.marker.y}
+                    r={playerView.marker.radius}
+                    fill={playerView.color.toHex()}
                   />
                   <text
                     className={`font-main ${styles.playerName}`}
-                    x={player.name.x}
-                    y={player.name.y}
+                    x={playerView.name.x}
+                    y={playerView.name.y}
                     textAnchor="end"
                     dominantBaseline="middle"
                   >
-                    {player.name.label}
+                    {playerView.name.label}
                   </text>
                   <text
                     className={`font-main ${styles.playerRoles}`}
-                    x={player.roles.x}
-                    y={player.roles.y}
+                    x={playerView.roles.x}
+                    y={playerView.roles.y}
                     textAnchor="end"
                     dominantBaseline="middle"
                   >
-                    {player.roles.label}
+                    {playerView.roles.label}
                   </text>
                 </g>
               );
