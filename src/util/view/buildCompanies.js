@@ -104,7 +104,19 @@ function buildCompanyView(companyModel, companyIndex, people, mapTo) {
     },
   };
 
-  companyView.name.label = companyModel.name;
+  companyView.name.label = companyModel.name
+    .split(/(\*.+\*)/)
+    .filter((str) => str.length > 0)
+    .map((part) => {
+      const match = part.match(/^\*(.+)\*$/);
+
+      if (match) {
+        return `<tspan font-style="italic">${match[1]}</tspan>`;
+      } else {
+        return `<tspan>${part}</tspan>`;
+      }
+    })
+    .join("");
   companyView.name.fontSize = emsToPixels(1.6);
   companyView.name.lineHeight = companyView.name.fontSize;
   companyView.name.marginBottom = emsToPixels(0.5, {

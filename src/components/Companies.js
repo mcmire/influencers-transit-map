@@ -18,18 +18,16 @@ export default function Companies({ view }) {
               textAnchor="middle"
               stroke="white"
               strokeWidth={3}
-            >
-              {companyView.name.label}
-            </text>
+              dangerouslySetInnerHTML={{ __html: companyView.name.label }}
+            ></text>
             <text
               x={companyView.name.x}
               y={companyView.name.y}
               className={`font-main ${styles.companyName}`}
               fontSize={`${companyView.name.fontSize}px`}
               textAnchor="middle"
-            >
-              {companyView.name.label}
-            </text>
+              dangerouslySetInnerHTML={{ __html: companyView.name.label }}
+            />
             {companyView.players.map((playerView, playerIndex) => {
               return (
                 <g key={playerIndex}>
