@@ -15,7 +15,7 @@ export default function Routes({ view }) {
           .join(" ");
 
         return (
-          <React.Fragment key={route.id}>
+          <g key={route.id} opacity="0.8">
             <path
               key={`${route.id}-1`}
               d={d}
@@ -34,7 +34,7 @@ export default function Routes({ view }) {
               strokeLinejoin="round"
               fill="none"
             />
-          </React.Fragment>
+          </g>
         );
       })}
     </g>

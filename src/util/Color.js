@@ -3,14 +3,15 @@ import colorSpace from "color-space";
 import colorStringify from "color-stringify";
 
 export default class Color {
-  constructor({ h, c, l }) {
-    this.h = h;
-    this.c = c;
+  constructor({ l, c, h, a = 1 }) {
     this.l = l;
+    this.c = c;
+    this.h = h;
+    this.a = a;
   }
 
   clone() {
-    return new this.constructor({ h: this.h, c: this.c, l: this.l });
+    return new this.constructor({ l: this.l, c: this.c, h: this.h, a: this.a });
   }
 
   lighten(percentage) {
