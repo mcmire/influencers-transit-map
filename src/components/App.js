@@ -5,8 +5,8 @@ import prepareModel from "../util/prepareModel";
 import prepareView from "../util/prepareView";
 import styles from "./App.css";
 import TimelineAxis from "./TimelineAxis";
-import Companies from "./Companies";
-import Routes from "./Routes";
+import CompanyNames from "./CompanyNames";
+import PeopleJourneys from "./PeopleJourneys";
 
 const width = 1000;
 const height = 1000;
@@ -22,8 +22,8 @@ export default function App() {
       viewBox={`0 0 ${view.width} ${view.height}`}
     >
       <TimelineAxis view={view} />
-      <Routes view={view} />
-      <Companies view={view} />
+      <PeopleJourneys view={view} />
+      <CompanyNames view={view} />
     </svg>
   );
 }

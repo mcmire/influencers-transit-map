@@ -1,45 +1,55 @@
-import { min, uniq, sortBy, sum } from "lodash";
+import { min, keyBy, groupBy, reduce, uniq, sortBy, sum } from "lodash";
 
 import Color from "../Color";
 import emsToPixels from "../emsToPixels";
 
-function buildCompaniesWithRelationships(companies, relationships) {
-  return companies.reduce((companies, company) => {
-    const companyRelationships = relationships.filter(
-      (relationship) => relationship.company === company.id
-    );
-
-    if (companyRelationships.length > 0) {
-      return [
-        ...companies,
-        {
-          ...company,
-          relationships: sortBy(companyRelationships, (relationship) =>
-            relationship.dateRange.start.getTime()
-          ),
-        },
-      ];
-    } else {
-      return companies;
+function sortAndFilterCompanies(companies) {
+  return sortBy(
+    companies.map((company) => {
+      return {
+        ...company,
+        relationships: sortBy(company.relationships, (relationship) => {
+          return relationship.dateRange.start.getTime();
+        }).map((relationship, relationshipIndex) => {
+          return { ...relationship, index: relationshipIndex };
+        }),
+      };
+    }),
+    (company) => {
+      return min(
+        company.relationships.map((relationship) =>
+          relationship.dateRange.start.getTime()
+        )
+      );
     }
-  }, []);
+  )
+    .filter((company) => {
+      return company.relationships.length > 0;
+    })
+    .map((company, companyIndex) => {
+      return { ...company, index: companyIndex };
+    });
 }
 
-function buildSortedCompaniesWithRelationships(companiesWithRelationships) {
-  return sortBy(companiesWithRelationships, (company) =>
-    min(
-      company.relationships.map((relationship) =>
-        relationship.dateRange.start.getTime()
-      )
-    )
-  );
+function buildPersonViews(people) {
+  const peopleWithRelationships = people.filter((person) => {
+    return person.relationships.length > 0;
+  });
+  const colorHueMultiple = 360 / peopleWithRelationships.length;
+  return peopleWithRelationships.map((person, personIndex) => {
+    const color = new Color({
+      h: colorHueMultiple * personIndex,
+      c: 30,
+      l: 80,
+    });
+    return { ...person, color };
+  });
 }
 
 function buildPlayerView(
   relationship,
-  relationshipIndex,
   companyView,
-  people,
+  personView,
   playerViewsSoFar,
   mapTo
 ) {
@@ -48,16 +58,12 @@ function buildPlayerView(
     playerViewsSoFar.length > 0
       ? playerViewsSoFar[playerViewsSoFar.length - 1]
       : null;
-  const person = people.find((person) => person.id === relationship.player);
-  if (person == null) {
-    throw new Error(`Could not find person by ${relationship.player}`);
-  }
   const playerView = {
-    id: relationship.player,
+    id: relationship.person.id,
     name: {},
     roles: {},
     marker: {},
-    color: person.color,
+    extension: {},
     model: relationship,
   };
 
@@ -65,9 +71,9 @@ function buildPlayerView(
     companyView.name.lineHeight +
     companyView.name.marginBottom +
     (lastPlayerView != null
-      ? (lastPlayerView.height + playerPaddingBottom) * relationshipIndex
+      ? (lastPlayerView.height + playerPaddingBottom) * relationship.index
       : 0);
-  playerView.name.label = person.name;
+  playerView.name.label = personView.name;
   playerView.name.fontSize = emsToPixels(1);
   playerView.name.lineHeight = emsToPixels(1.2, {
     relativeTo: playerView.name.fontSize,
@@ -84,6 +90,10 @@ function buildPlayerView(
   playerView.marker.y =
     playerView.roles.y - (playerView.roles.y - playerView.name.y) / 2;
   playerView.marker.radius = 8;
+  playerView.marker.color = personView.color;
+
+  playerView.extension.x = mapTo.x(relationship.dateRange.end);
+  playerView.extension.y = playerView.marker.y;
 
   playerView.name.x = playerView.marker.x - playerView.marker.radius - 15;
   playerView.roles.x = playerView.marker.x - playerView.marker.radius - 15;
@@ -93,10 +103,10 @@ function buildPlayerView(
   return [...playerViewsSoFar, playerView];
 }
 
-function buildCompanyView(companyModel, companyIndex, people, mapTo) {
+function buildCompanyView(company, personViewsById, mapTo) {
   const companyView = {
-    id: companyModel.id,
-    index: companyIndex,
+    id: company.id,
+    index: company.index,
     name: {},
     marginBottom: emsToPixels(4),
     mapToY(y) {
@@ -104,7 +114,7 @@ function buildCompanyView(companyModel, companyIndex, people, mapTo) {
     },
   };
 
-  companyView.name.label = companyModel.name
+  companyView.name.label = company.name
     .split(/(\*.+\*)/)
     .filter((str) => str.length > 0)
     .map((part) => {
@@ -123,13 +133,20 @@ function buildCompanyView(companyModel, companyIndex, people, mapTo) {
     relativeTo: companyView.name.fontSize,
   });
 
-  companyView.players = companyModel.relationships.reduce(
-    (playerViewsSoFar, relationship, relationshipIndex) => {
+  companyView.players = company.relationships.reduce(
+    (playerViewsSoFar, relationship) => {
+      const personView = personViewsById[relationship.person.id];
+
+      if (personView == null) {
+        throw new Error(
+          `Can't find person view by "${relationship.person.id}"!`
+        );
+      }
+
       return buildPlayerView(
         relationship,
-        relationshipIndex,
         companyView,
-        people,
+        personView,
         playerViewsSoFar,
         mapTo
       );
@@ -155,6 +172,7 @@ function buildCompanyView(companyModel, companyIndex, people, mapTo) {
   companyView.name.y = companyView.mapToY(0);
   companyView.players.forEach((player) => {
     player.marker.y = companyView.mapToY(player.marker.y);
+    player.extension.y = player.marker.y;
     player.name.y = companyView.mapToY(player.name.y);
     player.roles.y = companyView.mapToY(player.roles.y);
   });
@@ -163,38 +181,46 @@ function buildCompanyView(companyModel, companyIndex, people, mapTo) {
 }
 
 export default function buildCompanies(model, mapTo) {
-  const companiesWithRelationships = buildCompaniesWithRelationships(
-    model.companies,
-    model.relationships
-  );
-  const sortedCompaniesWithRelationships = buildSortedCompaniesWithRelationships(
-    companiesWithRelationships
-  );
-  const peopleIds = uniq(
-    sortedCompaniesWithRelationships.flatMap((companyWithRelationships) =>
-      companyWithRelationships.relationships.map(
-        (relationship) => relationship.player
-      )
-    )
-  );
-  const colorHueMultiple = 360 / peopleIds.length;
-  const peopleWithRelationships = model.people.reduce(
-    (people, person, personIndex) => {
-      if (peopleIds.indexOf(person.id) !== -1) {
-        const color = new Color({
-          h: colorHueMultiple * personIndex,
-          c: 30,
-          l: 80,
-        });
-        return [...people, { ...person, color }];
-      } else {
-        return people;
-      }
-    },
-    []
-  );
+  const sortedCompanies = sortAndFilterCompanies(model.companies);
+  const personViews = buildPersonViews(model.people);
+  const personViewsById = keyBy(personViews, "id");
 
-  return sortedCompaniesWithRelationships.map((company, companyIndex) =>
-    buildCompanyView(company, companyIndex, peopleWithRelationships, mapTo)
-  );
+  const companyViews = sortedCompanies.map((company) => {
+    return buildCompanyView(company, personViewsById, mapTo);
+  });
+
+  const playerViewsByPersonId = companyViews.reduce((obj1, companyView) => {
+    return reduce(
+      companyView.players,
+      (obj2, playerView) => {
+        const personId = playerView.id;
+        if (personId in obj2) {
+          return {
+            ...obj2,
+            [personId]: [...obj2[personId], playerView],
+          };
+        } else {
+          return { ...obj2, [personId]: [playerView] };
+        }
+      },
+      obj1
+    );
+  }, {});
+
+  const peopleViews = personViews.map((personView) => {
+    const playerViews = playerViewsByPersonId[personView.id];
+
+    if (playerViews == null) {
+      throw new Error(`Can't find player view by "${personView.id}"!`);
+    }
+
+    const pathColor = playerViews[0].marker.color.lighten(0.15);
+
+    return {
+      id: playerViews[0].id,
+      career: { companyTenures: playerViews, pathColor: pathColor },
+    };
+  });
+
+  return { companyViews, peopleViews };
 }

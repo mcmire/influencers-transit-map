@@ -1,4 +1,4 @@
-import { clone } from "lodash";
+import { cloneDeep, groupBy, keyBy } from "lodash";
 
 function parseDate(string) {
   const match = string.match(/^(\d{4})(?:-(\d{2})(?:-(\d{2}))?)?$/);
@@ -21,19 +21,31 @@ function parseDate(string) {
 }
 
 export default function prepareModel(data) {
-  const normalizedRelationships = data.relationships.map((relationship) => {
-    return {
-      ...relationship,
-      dateRange: {
-        start: parseDate(relationship.dateRange.start),
-        end: parseDate(relationship.dateRange.end),
-      },
+  const companies = cloneDeep(data.companies);
+  const people = cloneDeep(data.people);
+  const relationships = cloneDeep(data.relationships);
+
+  const companiesById = keyBy(companies, "id");
+  const peopleById = keyBy(people, "id");
+  const relationshipsByCompanyId = groupBy(relationships, "company");
+  const relationshipsByPersonId = groupBy(relationships, "person");
+
+  companies.forEach((company) => {
+    company.relationships = relationshipsByCompanyId[company.id] ?? [];
+  });
+
+  people.forEach((person) => {
+    person.relationships = relationshipsByPersonId[person.id] ?? [];
+  });
+
+  relationships.forEach((relationship) => {
+    relationship.company = companiesById[relationship.company];
+    relationship.person = peopleById[relationship.person];
+    relationship.dateRange = {
+      start: parseDate(relationship.dateRange.start),
+      end: parseDate(relationship.dateRange.end),
     };
   });
 
-  return {
-    companies: clone(data.companies),
-    people: clone(data.people),
-    relationships: normalizedRelationships,
-  };
+  return { companies, people, relationships };
 }
