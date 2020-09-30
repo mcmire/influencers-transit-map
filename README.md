@@ -2,6 +2,8 @@
 
 An app that renders a timeline of comedians and how they relate to one another.
 
+![screenshot](docs/screenshot.png)
+
 ## Developing
 
 * `yarn install`
