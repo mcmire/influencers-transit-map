@@ -114,7 +114,7 @@ function buildCompanyView(company, personViewsById, mapTo) {
     },
   };
 
-  companyView.name.label = company.name
+  companyView.name.label = company.displayName
     .split(/(\*.+\*)/)
     .filter((str) => str.length > 0)
     .map((part) => {

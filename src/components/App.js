@@ -8,7 +8,7 @@ import TimelineAxis from "./TimelineAxis";
 import CompanyNames from "./CompanyNames";
 import PeopleJourneys from "./PeopleJourneys";
 
-const width = 1000;
+const width = 1280;
 const height = 1000;
 const padding = { x: 100, y: 50 };
 const view = buildView(buildModel(model), { width, height, padding });
