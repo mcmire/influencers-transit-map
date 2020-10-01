@@ -20,7 +20,7 @@ function parseDate(string) {
   }
 }
 
-export default function prepareModel(data) {
+export default function buildModel(data) {
   const companies = cloneDeep(data.companies);
   const people = cloneDeep(data.people);
   const relationships = cloneDeep(data.relationships);

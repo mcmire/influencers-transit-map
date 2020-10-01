@@ -1,8 +1,8 @@
 import React from "react";
 
 import model from "../model";
-import prepareModel from "../util/prepareModel";
-import prepareView from "../util/prepareView";
+import buildModel from "../util/buildModel";
+import buildView from "../util/buildView";
 import styles from "./App.css";
 import TimelineAxis from "./TimelineAxis";
 import CompanyNames from "./CompanyNames";
@@ -11,7 +11,7 @@ import PeopleJourneys from "./PeopleJourneys";
 const width = 1000;
 const height = 1000;
 const padding = { x: 100, y: 50 };
-const view = prepareView(prepareModel(model), { width, height, padding });
+const view = buildView(buildModel(model), { width, height, padding });
 
 export default function App() {
   return (
