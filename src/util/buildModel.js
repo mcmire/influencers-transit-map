@@ -42,7 +42,10 @@ function oldBuildModel(data) {
 class ModelBuilder {
   static PROCESSORS = [
     [/^(.+) is a source with URL "(.+?)"\.$/, "processNewSourceFact"],
-    [/^(.+) is an? (organization|show)\.$/, "processNewCompanyFact"],
+    [
+      /^(.+) is an? (organization|show|club|movie|scene)\.$/,
+      "processNewCompanyFact",
+    ],
     [
       /^When displaying (?:[Tt]he )?(.+), use "(.+)"\.$/,
       "processCompanyDisplayNameFact",
@@ -93,7 +96,8 @@ class ModelBuilder {
 
   processNewCompanyFact(fact, match) {
     const id = this.#generateIdForNewObjectIn(this.data.companies, match[1]);
-    const displayName = match[2] === "show" ? `*${match[1]}*` : match[1];
+    const displayName =
+      match[2] === "show" || match[2] === "movie" ? `*${match[1]}*` : match[1];
 
     this.data.companies.push({
       id: id,
@@ -179,7 +183,7 @@ class ModelBuilder {
       companyDescriptor = match2[2];
 
       if (/\b(?:, )?and\b/.test(match2[1])) {
-        const match3 = match2[1].match(/^(.+?) (?:for|of|on|at)$/);
+        const match3 = match2[1].match(/^(.+?) (?:for|of|on|at|within)$/);
 
         if (match3 != null) {
           rawRoles = match3[1].split(/\b(?:, )?and\b/);
@@ -198,7 +202,7 @@ class ModelBuilder {
     const roles = rawRoles.map((clause) => {
       return clause
         .replace(/\b(?:an? |the )?\b/g, "")
-        .replace(/(?: (?:for|of|on|at))\b/, "")
+        .replace(/(?: (?:for|of|on|at|within))\b/, "")
         .trim();
     });
 

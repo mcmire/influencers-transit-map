@@ -1,68 +1,12 @@
 const companies = [
   /*
   {
-    id: "harvard-lampoon",
-    name: "*Harvard Lampoon*",
-  },
-  {
-    id: "the-wilton-north-report",
-    name: "*The Wilton North Report*",
-  },
-  {
-    id: "not-necessarily-the-news",
-    name: "*Not Necessarily the News*",
-  },
-  {
-    id: "second-city-chicago",
-    name: "Second City Chicago",
-  },
-  {
-    id: "happy-happy-good-show",
-    name: "*Happy Happy Good Show*",
-  },
-  {
-    id: "snl",
-    name: "*Saturday Night Live*",
-  },
-  {
-    id: "simpsons",
-    name: "*The Simpsons*",
-  },
-  {
-    id: "catch-a-rising-star",
-    name: "Catch a Rising Star comedy scene",
-  },
-  {
-    id: "the-ben-stiller-show",
-    name: "*The Ben Stiller Show*",
-  },
-  {
-    id: "late-night-with-conan-o-brien",
-    name: "*Late Night with Conan O'Brien*",
-  },
-  {
-    id: "mr-show",
-    name: "*Mr. Show*",
-  },
-  {
-    id: "the-dana-carvey-show",
-    name: "*The Dana Carvey Show*",
-  },
-  {
-    id: "the-daily-show",
-    name: "*The Daily Show*",
-  },
-  {
     id: "madtv",
     name: "*madTV*",
   },
   {
     id: "scrubs",
     name: "*Scrubs*",
-  },
-  {
-    id: "arrested-development",
-    name: "*Arrested Development*",
   },
   {
     id: "The Larry Sanders Show",
@@ -74,36 +18,8 @@ const companies = [
 const people = [
   /*
   {
-    id: "conan",
-    name: "Conan O'Brien",
-  },
-  {
-    id: "greg-daniels",
-    name: "Greg Daniels",
-  },
-  {
-    id: "colbert",
-    name: "Stephen Colbert",
-  },
-  {
-    id: "bob-odenkirk",
-    name: "Bob Odenkirk",
-  },
-  {
-    id: "smigel",
-    name: "Robert Smigel",
-  },
-  {
-    id: "david-cross",
-    name: "David Cross",
-  },
-  {
     id: "janeane-garofalo",
     name: "Janeane Garofalo",
-  },
-  {
-    id: "louis-ck",
-    name: "Louis C.K.",
   },
   {
     id: "judd-apatow",
@@ -168,71 +84,6 @@ const people = [
   */
 ];
 
-const relationships = [
-  /*
-  {
-    company: "harvard-lampoon",
-    person: "conan",
-    roles: ["writer", "president"],
-    dateRange: { start: "1981", end: "1985" },
-  },
-  {
-    company: "harvard-lampoon",
-    person: "greg-daniels",
-    roles: ["writer"],
-    dateRange: { start: "1981", end: "1985" },
-  },
-  {
-    company: "not-necessarily-the-news",
-    person: "conan",
-    roles: ["writer"],
-    dateRange: { start: "1985", end: "1987" },
-  },
-  {
-    company: "not-necessarily-the-news",
-    person: "greg-daniels",
-    roles: ["writer"],
-    dateRange: { start: "1985", end: "1987" },
-  },
-  {
-    company: "the-wilton-north-report",
-    person: "conan",
-    roles: ["writer"],
-    dateRange: { start: "1987", end: "1987" },
-  },
-  {
-    company: "the-wilton-north-report",
-    person: "greg-daniels",
-    roles: ["writer"],
-    dateRange: { start: "1987", end: "1987" },
-  },
-  {
-    company: "snl",
-    person: "conan",
-    roles: ["writer"],
-    dateRange: { start: "1988-01", end: "1991" },
-  },
-  {
-    company: "snl",
-    person: "greg-daniels",
-    roles: ["writer"],
-    dateRange: { start: "1988-01", end: "1990" },
-  },
-  {
-    company: "simpsons",
-    person: "conan",
-    roles: ["writer", "producer"],
-    dateRange: { start: "1991", end: "1993" },
-  },
-  {
-    company: "simpsons",
-    person: "greg-daniels",
-    roles: ["writer", "producer"],
-    dateRange: { start: "1993", end: "1997" },
-  },
-  */
-];
-
 const model = `
 Wikipedia/Conan is a source with URL "https://en.wikipedia.org/wiki/Conan_O%27Brien".
 Wikipedia/Greg Daniels is a source with URL "https://en.wikipedia.org/wiki/Greg_Daniels".
@@ -240,6 +91,11 @@ Wikipedia/The Office is a source with URL "https://en.wikipedia.org/wiki/The_Off
 Wikipedia/Parks and Rec is a source with URL "https://en.wikipedia.org/wiki/Parks_and_Recreation".
 Wikipedia/Colbert is a source with URL "https://en.wikipedia.org/wiki/Stephen_Colbert".
 Wikipedia/Odenkirk is a source with URL "https://en.wikipedia.org/wiki/Bob_Odenkirk".
+Wikipedia/Smigel is a source with URL "https://en.wikipedia.org/wiki/Robert_Smigel".
+Wikipedia/Ambiguously Gay Duo is a source with URL "https://en.wikipedia.org/wiki/The_Ambiguously_Gay_Duo".
+Wikipedia/David Cross is a source with URL "https://en.wikipedia.org/wiki/David_Cross".
+Wikipedia/Louis CK is a source with URL "https://en.wikipedia.org/wiki/Louis_C.K.".
+Wikipedia/Pamela Adlon is a source with URL "https://en.wikipedia.org/wiki/Pamela_Adlon".
 
 # TODO: Reordering this list changes the graph?
 The Harvard Lampoon is an organization. When displaying The Harvard Lampoon, use "*Harvard Lampoon*".
@@ -270,6 +126,15 @@ Better Call Saul is a show.
 Tom Goes to the Mayor is a show.
 Tim and Eric Awesome Show, Great Job! is a show.
 W/ Bob and David is a show.
+The Ambiguously Gay Duo is a show.
+Catch a Rising Star is a club.
+Un-Cabaret is a club.
+Arrested Development is a show.
+Boston comedy scene is a scene.
+The Chris Rock Show is a show.
+Pootie Tang is a movie.
+Lucky Louie is a show.
+Louie is a show.
 
 Conan O'Brien is a person. "Conan" is short for Conan O'Brien.
 Conan was a writer for and president of the Harvard Lampoon between 1981 and 1985 (source: Wikipedia/Conan).
@@ -287,6 +152,7 @@ Greg Daniels was a writer for Not Necessarily the News between 1985 and 1987 (so
 Greg Daniels was a writer for the Wilton North Report in 1987 (source: Wikipedia/Greg Daniels).
 Greg Daniels was a writer for SNL between January 1988 and some time in 1990 (source: Wikipedia/Greg Daniels).
 Greg Daniels was a writer and producer for the Simpsons between 1993 and 1997 (source: Wikipedia/Greg Daniels).
+Greg Daniels was the co-creator, writer and producer for King of the Hill between 1997 and 2001 (source: Wikipedia/Greg Daniels).
 Greg Daniels was the developer and showrunner of The Office between 2005 and 2009 (source: Wikipedia/The Office).
 Greg Daniels was the co-creator and showrunner of Parks and Rec between 2009 and 2013 (sources: Wikipedia/Parks and Rec, Wikipedia/The Office).
 Greg Daniels was the showrunner of The Office in 2013 (sources: Wikipedia/Greg Daniels, Wikipedia/The Office).
@@ -296,6 +162,7 @@ Colbert was a performer at Second City Chicago from 1986 to 1995 (source: Wikipe
 Colbert was a writer on Exit 57 between 1995 and 1996 (source: Wikipedia/Colbert).
 Colbert was a performer and writer for the Dana Carvey Show in 1996 (source: Wikipedia/Colbert).
 Colbert was a writer for SNL in 1996 (source: Wikipedia/Colbert).
+Colbert was a writer and actor for the Ambiguously Gay Duo between 1996 and 2011 (source: Wikipedia/Ambiguously Gay Duo).
 Colbert was a writer and performer for Strangers with Candy between 1999 and 2000 (source: Wikipedia/Colbert).
 Colbert was a writer and performer for the Daily Show between 1997 and 2005 (source: Wikipedia/Colbert).
 Colbert was the creator, host, and writer for the Colbert Report between 2005 and 2014 (source: Wikipedia/Colbert).
@@ -315,9 +182,41 @@ Odenkirk was a executive producer and guest actor for Tom Goes to the Mayor betw
 Odenkirk was a guest actor for Tim and Eric Awesome Show, Great Job! between 2007 and 2010 (source: Wikipedia/Odenkirk).
 # TODO: Odenkirk was an actor in Breaking Bad between 2009 and 2013 (source: Wikipedia/Odenkirk).
 Odenkirk was an actor for Breaking Bad between 2009 and 2013 (source: Wikipedia/Odenkirk).
-Odenkirk was an actor for W/ Bob and David in 2015 (source: Wikipedia/Odenkirk).
+Odenkirk was an executive producer, writer, and actor for W/ Bob and David in 2015 (source: Wikipedia/Odenkirk).
 # TODO: Odenkirk has been an actor in Better Call Saul since 2015 (source: Wikipedia/Odenkirk).
 Odenkirk has been an actor for Better Call Saul since 2015 (source: Wikipedia/Odenkirk).
+
+Robert Smigel is a person. "Smigel" is short for Robert Smigel.
+Smigel was a student and performer for Second City Chicago from 1983 to 1985 (source: Wikipedia/Smigel).
+Smigel was a writer on SNL from 1985 to 1993 (source: Wikipedia/Smigel).
+Smigel was a writer for Happy Happy Good Show in 1988 (source: Wikipedia/Smigel).
+Smigel was head writer for Late Night with Conan O'Brien from 1992 to 1996 (source: Wikipedia/Smigel).
+Smigel was a writer and performer for the Dana Carvey Show in 1996 (source: Wikipedia/Smigel).
+Smigel was a writer and actor for the Ambiguously Gay Duo between 1996 and 2011 (source: Wikipedia/Smigel).
+
+David Cross is a person.
+David Cross was a comic at Catch a Rising Star between 1990 and 1993 (source: Wikipedia/David Cross).
+David Cross was a comic at Un-Cabaret in 1993 (source: Wikipedia/David Cross).
+David Cross was a writer and performer for the Ben Stiller Show in 1993 (source: Wikipedia/David Cross).
+# TODO: David Cross was the co-creator of and a writer and performer for Mr. Show from 1995 to 1998 (source: Wikipedia/Odenkirk).
+David Cross was the co-creator of and a writer and performer for Mr Show from 1995 to 1998 (source: Wikipedia/Odenkirk).
+David Cross was an actor on Arrested Development between 2003 and 2006 (source: Wikipedia/David Cross).
+David Cross was an executive producer, writer, and actor for W/ Bob and David in 2015 (source: Wikipedia/David Cross).
+
+# TODO: Louis C.K.
+Louis CK is a person.
+Louis CK was a comic within the Boston comedy scene from 1987 to 1989 (source: Wikipedia/Louis CK).
+Louis CK was a writer for Late Night with Conan O'Brien from 1993 to 1994 (source: Wikipedia/Louis CK).
+Louis CK was head writer for the Dana Carvey Show in 1996 (source: Wikipedia/Louis CK).
+Louis CK was writer for the Chris Rock Show from 1997 to 1999 (source: Wikipedia/Louis CK).
+Louis CK was writer and director of Pootie Tang in 2001 (source: Wikipedia/Louis CK).
+Louis CK was the creator of and writer and actor for Lucky Louie in 2006 (source: Wikipedia/Louis CK).
+Louis CK was the creator of and writer and actor for Louie between 2009 and 2015 (source: Wikipedia/Louis CK).
+
+Pamela Adlon is a person.
+Pamela Adlon was a voice actor on King of the Hill between 1997 and 2010 (source: Wikipedia/Pamela Adlon).
+Pamela Adlon was an actor for Lucky Louie in 2006 (source: Wikipedia/Pamela Adlon).
+Pamela Adlon was an actor and producer for Louie between 2010 and 2015 (source: Wikipedia/Pamela Adlon).
 `;
 
 export default model;

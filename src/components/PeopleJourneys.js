@@ -52,7 +52,7 @@ function PersonCareerRoute({ personView }) {
     .join(" ");
 
   return (
-    <g opacity={0.8}>
+    <g opacity={0.5}>
       <path
         key={`career-route-${personView.id}-1`}
         d={d}
