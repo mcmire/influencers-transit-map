@@ -29,7 +29,10 @@ function oldBuildModel(data) {
       : peopleById[relationship.person];
     relationship.dateRange = {
       start: parseDateString(relationship.dateRange.start),
-      end: parseDateString(relationship.dateRange.end),
+      end:
+        relationship.dateRange.end != null
+          ? parseDateString(relationship.dateRange.end)
+          : new Date(),
     };
   });
 
@@ -39,7 +42,7 @@ function oldBuildModel(data) {
 class ModelBuilder {
   static PROCESSORS = [
     [/^(.+) is a source with URL "(.+?)"\.$/, "processNewSourceFact"],
-    [/^(?:The )?(.+) is an? (?:organization|show)\.$/, "processNewCompanyFact"],
+    [/^(.+) is an? (organization|show)\.$/, "processNewCompanyFact"],
     [
       /^When displaying (?:[Tt]he )?(.+), use "(.+)"\.$/,
       "processCompanyDisplayNameFact",
@@ -47,8 +50,12 @@ class ModelBuilder {
     [/^"(.+)" is short for (.+)\.$/, "processAliasFact"],
     [/^(.+) is a person\.$/, "processNewPersonFact"],
     [
-      /^(.+) was (.+) (?:in|on|between) (?:some time in )?(.+?)(?: and (?:some time in )?(.+?))?(?: \(sources?: (.+)\))?\.$/,
-      "processNewRelationshipFact",
+      /^(.+) (?:was|has been) (.+?) (?:between|from) (?:some time in )?(.+?) (?:and|to) (?:some time in )?(.+?)(?: \(sources?: (.+)\))?\.$/,
+      "processNewRelationshipFactWithTwoDates",
+    ],
+    [
+      /^(.+) (?:was|has been) (.+?) (in|on|since|from) (?:some time in )?(.+?)(?: \(sources?: (.+)\))?\.$/,
+      "processNewRelationshipFactWithOneDate",
     ],
   ];
 
@@ -62,10 +69,19 @@ class ModelBuilder {
   }
 
   processFact(fact) {
-    const result = this.#findProcessorFor(fact);
+    const processorFindingResult = this.#findProcessorFor(fact);
 
-    if (result != null) {
-      this[result.processorName](fact, result.match);
+    if (processorFindingResult != null) {
+      const processorResult = this[processorFindingResult.processorName](
+        fact,
+        processorFindingResult.match
+      );
+
+      if (processorResult === false) {
+        throw new Error(`Don't know how to process fact: ${fact}`);
+      } else {
+        return processorResult;
+      }
     } else {
       throw new Error(`Don't know how to process fact: ${fact}`);
     }
@@ -77,11 +93,12 @@ class ModelBuilder {
 
   processNewCompanyFact(fact, match) {
     const id = this.#generateIdForNewObjectIn(this.data.companies, match[1]);
+    const displayName = match[2] === "show" ? `*${match[1]}*` : match[1];
 
     this.data.companies.push({
       id: id,
       name: match[1],
-      displayName: match[1],
+      displayName: displayName,
       aliases: [],
     });
   }
@@ -112,53 +129,28 @@ class ModelBuilder {
     });
   }
 
-  processNewRelationshipFact(fact, match1) {
-    const personDescriptor = match1[1];
-    const startDate = match1[3];
-    const endDate = match1[4] ?? match1[3];
-    const sourceDescriptors = match1[5] == null ? [] : match1[5].split(/,[ ]+/);
+  processNewRelationshipFactWithOneDate(fact, match) {
+    this.#processNewRelationshipFact(fact, [
+      null,
+      match[1], // person
+      match[2], // roles
+      match[3], // preposition
+      match[4], // start date
+      null, // end date
+      match[5], // sources
+    ]);
+  }
 
-    if (/\band\b/.test(match1[2])) {
-      const match2 = match1[2].match(
-        /\b(?:an? )?(.+?) (?:(?:for|of|on) )?and (?:an? )?(.+?) (?:for|of|on) (?:the )?(.+)/
-      );
-
-      if (match2 != null) {
-        const roles = [match2[1], match2[2]];
-        const companyDescriptor = match2[3];
-
-        this.#processNewRelationshipFact({
-          personDescriptor: personDescriptor,
-          roles: roles,
-          companyDescriptor: companyDescriptor,
-          startDate: startDate,
-          endDate: endDate,
-          sourceDescriptors: sourceDescriptors,
-        });
-      } else {
-        return false;
-      }
-    } else {
-      const match2 = match1[2].match(
-        /\b(?:an? )?(.+?) (?:for|of|on) (?:the )?(.+)/
-      );
-
-      if (match2 != null) {
-        const roles = [match2[1]];
-        const companyDescriptor = match2[2];
-
-        this.#processNewRelationshipFact({
-          personDescriptor: personDescriptor,
-          roles: roles,
-          companyDescriptor: companyDescriptor,
-          startDate: startDate,
-          endDate: endDate,
-          sourceDescriptors: sourceDescriptors,
-        });
-      } else {
-        return false;
-      }
-    }
+  processNewRelationshipFactWithTwoDates(fact, match) {
+    this.#processNewRelationshipFact(fact, [
+      null,
+      match[1], // person
+      match[2], // roles
+      null, // preposition
+      match[3], // start date
+      match[4], // end date
+      match[5], // sources
+    ]);
   }
 
   #findProcessorFor(fact) {
@@ -173,7 +165,54 @@ class ModelBuilder {
     return null;
   }
 
-  #processNewRelationshipFact({
+  #processNewRelationshipFact(fact, match1) {
+    const personDescriptor = match1[1];
+    const startDate = match1[4];
+    const endDate = match1[3] === "since" ? null : match1[5] ?? match1[4];
+    const sourceDescriptors = match1[6] == null ? [] : match1[6].split(/,[ ]+/);
+    let companyDescriptor;
+    let rawRoles;
+
+    const match2 = match1[2].match(/^(.+?) (?:the )?([A-Z].+)$/);
+
+    if (match2 != null) {
+      companyDescriptor = match2[2];
+
+      if (/\b(?:, )?and\b/.test(match2[1])) {
+        const match3 = match2[1].match(/^(.+?) (?:for|of|on|at)$/);
+
+        if (match3 != null) {
+          rawRoles = match3[1].split(/\b(?:, )?and\b/);
+        } else {
+          debugger;
+          return false;
+        }
+      } else {
+        rawRoles = [match2[1]];
+      }
+    } else {
+      debugger;
+      return false;
+    }
+
+    const roles = rawRoles.map((clause) => {
+      return clause
+        .replace(/\b(?:an? |the )?\b/g, "")
+        .replace(/(?: (?:for|of|on|at))\b/, "")
+        .trim();
+    });
+
+    this.#_processNewRelationshipFact({
+      personDescriptor: personDescriptor,
+      roles: roles,
+      companyDescriptor: companyDescriptor,
+      startDate: startDate,
+      endDate: endDate,
+      sourceDescriptors: sourceDescriptors,
+    });
+  }
+
+  #_processNewRelationshipFact({
     personDescriptor,
     companyDescriptor,
     roles,
@@ -202,7 +241,7 @@ class ModelBuilder {
       roles: roles,
       dateRange: {
         start: parseDateString(startDate),
-        end: parseDateString(endDate),
+        end: endDate == null ? null : parseDateString(endDate),
       },
     });
   }
@@ -218,6 +257,7 @@ class ModelBuilder {
   }
 
   #findObjectBy(query, { collection = "any" } = {}) {
+    const cleanedQuery = query.replace(/^[Tt]he /, "");
     const collections =
       collection === "any"
         ? [this.data.companies, this.data.people]
@@ -226,9 +266,11 @@ class ModelBuilder {
     const foundObjects = collections.flatMap((collection) => {
       return collection.filter((object) => {
         return (
-          object.id === query ||
-          object.name === query ||
-          object.aliases.indexOf(query) !== -1
+          object.id === cleanedQuery ||
+          object.name === cleanedQuery ||
+          object.name === `The ${cleanedQuery}` ||
+          object.aliases.indexOf(cleanedQuery) !== -1 ||
+          object.aliases.indexOf(`The ${cleanedQuery}`) !== -1
         );
       });
     });

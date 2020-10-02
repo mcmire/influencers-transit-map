@@ -17,7 +17,6 @@ function PersonTenure({ tenureView }) {
         x={tenureView.name.x}
         y={tenureView.name.y}
         textAnchor="end"
-        dominantBaseline="middle"
       >
         {tenureView.name.label}
       </text>
@@ -26,7 +25,6 @@ function PersonTenure({ tenureView }) {
         x={tenureView.roles.x}
         y={tenureView.roles.y}
         textAnchor="end"
-        dominantBaseline="middle"
       >
         {tenureView.roles.label}
       </text>
@@ -39,9 +37,17 @@ function PersonCareerRoute({ personView }) {
     return [tenure.marker, tenure.extension];
   });
   const d = points
-    .map((point, pointIndex) => {
+    .flatMap((point, pointIndex) => {
       const operation = pointIndex === 0 ? "M" : "L";
-      return `${operation} ${point.x} ${point.y}`;
+      const newPoints = [];
+
+      if (pointIndex > 0 && points[pointIndex - 1].x > point.x) {
+        newPoints.push(`M ${point.x} ${points[pointIndex - 1].y}`);
+      }
+
+      newPoints.push(`${operation} ${point.x} ${point.y}`);
+
+      return newPoints;
     })
     .join(" ");
 

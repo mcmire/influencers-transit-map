@@ -53,7 +53,7 @@ function buildPlayerView(
   playerViewsSoFar,
   mapTo
 ) {
-  const playerPaddingBottom = emsToPixels(1.25, companyView.name.fontSize);
+  const playerPaddingBottom = emsToPixels(1);
   const lastPlayerView =
     playerViewsSoFar.length > 0
       ? playerViewsSoFar[playerViewsSoFar.length - 1]
@@ -68,11 +68,11 @@ function buildPlayerView(
   };
 
   playerView.name.y =
-    companyView.name.lineHeight +
-    companyView.name.marginBottom +
-    (lastPlayerView != null
-      ? (lastPlayerView.height + playerPaddingBottom) * relationship.index
-      : 0);
+    lastPlayerView != null
+      ? lastPlayerView.name.y + lastPlayerView.height + playerPaddingBottom
+      : companyView.mapToY(
+          companyView.name.lineHeight + companyView.name.marginBottom
+        );
   playerView.name.label = personView.name;
   playerView.name.fontSize = emsToPixels(1);
   playerView.name.lineHeight = emsToPixels(1.2, {
@@ -103,17 +103,28 @@ function buildPlayerView(
   return [...playerViewsSoFar, playerView];
 }
 
-function buildCompanyView(company, personViewsById, mapTo) {
+function buildCompanyView(company, companyViewsSoFar, personViewsById, mapTo) {
+  const lastCompanyView = companyViewsSoFar[companyViewsSoFar.length - 1];
   const companyView = {
     id: company.id,
     index: company.index,
-    name: {},
-    marginBottom: emsToPixels(4),
+    name: {
+      fontSize: emsToPixels(1.6),
+    },
+    get y() {
+      return lastCompanyView != null
+        ? lastCompanyView.y + lastCompanyView.height + this.marginBottom
+        : mapTo.y(0);
+    },
+    get marginBottom() {
+      return emsToPixels(3, { relativeTo: this.name.fontSize });
+    },
     mapToY(y) {
-      return mapTo.y(y) + (this.height + this.marginBottom) * this.index;
+      return this.y + y;
     },
   };
 
+  companyView.name.y = companyView.mapToY(0);
   companyView.name.label = company.displayName
     .split(/(\*.+\*)/)
     .filter((str) => str.length > 0)
@@ -127,7 +138,6 @@ function buildCompanyView(company, personViewsById, mapTo) {
       }
     })
     .join("");
-  companyView.name.fontSize = emsToPixels(1.6);
   companyView.name.lineHeight = companyView.name.fontSize;
   companyView.name.marginBottom = emsToPixels(0.5, {
     relativeTo: companyView.name.fontSize,
@@ -153,29 +163,13 @@ function buildCompanyView(company, personViewsById, mapTo) {
     },
     []
   );
-
+  const lastPlayerView = companyView.players[companyView.players.length - 1];
   const markerXs = companyView.players.map((playerView) => playerView.marker.x);
-  companyView.name.x = sum(markerXs) / markerXs.length;
-
-  const lastPlayerView =
-    companyView.players.length > 0
-      ? companyView.players[companyView.players.length - 1]
-      : null;
-  // NOTE: This isn't totally accurate but it's good enough for now
   companyView.height =
     lastPlayerView != null
-      ? lastPlayerView.roles.y + lastPlayerView.roles.lineHeight
+      ? lastPlayerView.roles.y + lastPlayerView.roles.lineHeight - companyView.y
       : 0;
-
-  // This is very imperative but we can't assign this until we know the height.
-  // And we can't know the height until we have all the players
-  companyView.name.y = companyView.mapToY(0);
-  companyView.players.forEach((player) => {
-    player.marker.y = companyView.mapToY(player.marker.y);
-    player.extension.y = player.marker.y;
-    player.name.y = companyView.mapToY(player.name.y);
-    player.roles.y = companyView.mapToY(player.roles.y);
-  });
+  companyView.name.x = sum(markerXs) / markerXs.length;
 
   return companyView;
 }
@@ -185,9 +179,12 @@ export default function buildCompanies(model, mapTo) {
   const personViews = buildPersonViews(model.people);
   const personViewsById = keyBy(personViews, "id");
 
-  const companyViews = sortedCompanies.map((company) => {
-    return buildCompanyView(company, personViewsById, mapTo);
-  });
+  const companyViews = sortedCompanies.reduce((companyViewsSoFar, company) => {
+    return [
+      ...companyViewsSoFar,
+      buildCompanyView(company, companyViewsSoFar, personViewsById, mapTo),
+    ];
+  }, []);
 
   const playerViewsByPersonId = companyViews.reduce((obj1, companyView) => {
     return reduce(

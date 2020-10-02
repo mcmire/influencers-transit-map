@@ -21,11 +21,8 @@ export default class Color {
   }
 
   toHex() {
-    console.log("color", this);
     const unclampedRgb = colorSpace.lchuv.rgb([this.l, this.c, this.h]);
-    console.debug("unclampedRgb", unclampedRgb);
     const clampedRgb = unclampedRgb.map((v) => clamp(Math.round(v), 0, 255));
-    console.debug("clampedRgb", clampedRgb);
     return colorStringify(clampedRgb, "hex");
   }
 }

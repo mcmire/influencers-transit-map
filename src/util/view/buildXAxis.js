@@ -63,16 +63,6 @@ export default function buildXAxis(model, { width, padding }) {
     model.relationships.map((relationship) => relationship.dateRange.end)
   );
   const roundedMaxDate = roundUpToNearestNYears(_maxDate, X_TICK_DIVISION);
-  console.debug(
-    "_minDate",
-    _minDate,
-    "_maxDate",
-    _maxDate,
-    "roundedMinDate",
-    roundedMinDate,
-    "roundedMaxDate",
-    roundedMaxDate
-  );
   const timestampRange = roundedMaxDate.getTime() - roundedMinDate.getTime();
 
   const mapTo = {
