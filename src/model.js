@@ -94,7 +94,7 @@ Wikipedia/Odenkirk is a source with URL "https://en.wikipedia.org/wiki/Bob_Odenk
 Wikipedia/Smigel is a source with URL "https://en.wikipedia.org/wiki/Robert_Smigel".
 Wikipedia/Ambiguously Gay Duo is a source with URL "https://en.wikipedia.org/wiki/The_Ambiguously_Gay_Duo".
 Wikipedia/David Cross is a source with URL "https://en.wikipedia.org/wiki/David_Cross".
-Wikipedia/Louis CK is a source with URL "https://en.wikipedia.org/wiki/Louis_C.K.".
+Wikipedia/Louis C.K. is a source with URL "https://en.wikipedia.org/wiki/Louis_C.K.".
 Wikipedia/Pamela Adlon is a source with URL "https://en.wikipedia.org/wiki/Pamela_Adlon".
 
 # TODO: Reordering this list changes the graph?
@@ -120,7 +120,7 @@ Happy Happy Good Show is a show.
 Get a Life is a show.
 The Dennis Miller Show is a show.
 The Ben Stiller Show is a show.
-Mr Show is a show.
+Mr. Show is a show.
 Breaking Bad is a show.
 Better Call Saul is a show.
 Tom Goes to the Mayor is a show.
@@ -176,8 +176,7 @@ Odenkirk was a writer for Get a Life in 1991 (source: Wikipedia/Odenkirk).
 Odenkirk was a writer for the Dennis Miller Show in 1991 (source: Wikipedia/Odenkirk).
 Odenkirk was a writer and performer for the Ben Stiller Show in 1992 (source: Wikipedia/Odenkirk).
 Odenkirk was a writer for Late Night with Conan O'Brien from 1993 to 1994 (source: Wikipedia/Odenkirk).
-# TODO: Odenkirk was the co-creator of and a writer and performer for Mr. Show from 1995 to 1998 (source: Wikipedia/Odenkirk).
-Odenkirk was the co-creator of and a writer and performer for Mr Show from 1995 to 1998 (source: Wikipedia/Odenkirk).
+Odenkirk was the co-creator of and a writer and performer for Mr. Show from 1995 to 1998 (source: Wikipedia/Odenkirk).
 Odenkirk was a executive producer and guest actor for Tom Goes to the Mayor between 2004 and 2006 (source: Wikipedia/Odenkirk).
 Odenkirk was a guest actor for Tim and Eric Awesome Show, Great Job! between 2007 and 2010 (source: Wikipedia/Odenkirk).
 # TODO: Odenkirk was an actor in Breaking Bad between 2009 and 2013 (source: Wikipedia/Odenkirk).
@@ -198,20 +197,18 @@ David Cross is a person.
 David Cross was a comic at Catch a Rising Star between 1990 and 1993 (source: Wikipedia/David Cross).
 David Cross was a comic at Un-Cabaret in 1993 (source: Wikipedia/David Cross).
 David Cross was a writer and performer for the Ben Stiller Show in 1993 (source: Wikipedia/David Cross).
-# TODO: David Cross was the co-creator of and a writer and performer for Mr. Show from 1995 to 1998 (source: Wikipedia/Odenkirk).
-David Cross was the co-creator of and a writer and performer for Mr Show from 1995 to 1998 (source: Wikipedia/Odenkirk).
+David Cross was the co-creator of and a writer and performer for Mr. Show from 1995 to 1998 (source: Wikipedia/Odenkirk).
 David Cross was an actor on Arrested Development between 2003 and 2006 (source: Wikipedia/David Cross).
 David Cross was an executive producer, writer, and actor for W/ Bob and David in 2015 (source: Wikipedia/David Cross).
 
-# TODO: Louis C.K.
-Louis CK is a person.
-Louis CK was a comic within the Boston comedy scene from 1987 to 1989 (source: Wikipedia/Louis CK).
-Louis CK was a writer for Late Night with Conan O'Brien from 1993 to 1994 (source: Wikipedia/Louis CK).
-Louis CK was head writer for the Dana Carvey Show in 1996 (source: Wikipedia/Louis CK).
-Louis CK was writer for the Chris Rock Show from 1997 to 1999 (source: Wikipedia/Louis CK).
-Louis CK was writer and director of Pootie Tang in 2001 (source: Wikipedia/Louis CK).
-Louis CK was the creator of and writer and actor for Lucky Louie in 2006 (source: Wikipedia/Louis CK).
-Louis CK was the creator of and writer and actor for Louie between 2009 and 2015 (source: Wikipedia/Louis CK).
+Louis C.K. is a person.
+Louis C.K. was a comic within the Boston comedy scene from 1987 to 1989 (source: Wikipedia/Louis C.K.).
+Louis C.K. was a writer for Late Night with Conan O'Brien from 1993 to 1994 (source: Wikipedia/Louis C.K.).
+Louis C.K. was head writer for the Dana Carvey Show in 1996 (source: Wikipedia/Louis C.K.).
+Louis C.K. was writer for the Chris Rock Show from 1997 to 1999 (source: Wikipedia/Louis C.K.).
+Louis C.K. was writer and director of Pootie Tang in 2001 (source: Wikipedia/Louis C.K.).
+Louis C.K. was the creator of and writer and actor for Lucky Louie in 2006 (source: Wikipedia/Louis C.K.).
+Louis C.K. was the creator of and writer and actor for Louie between 2009 and 2015 (source: Wikipedia/Louis C.K.).
 
 Pamela Adlon is a person.
 Pamela Adlon was a voice actor on King of the Hill between 1997 and 2010 (source: Wikipedia/Pamela Adlon).

@@ -316,14 +316,16 @@ export default function buildModel(factsString) {
     .filter((line) => line !== "" && !/^#/.test(line))
     .join(" ")
     .replace(/\s+/g, " ")
-    .match(/.+?\.(?: |$)/g);
+    .replace(/\b([A-Z][a-z]+) ((?:[A-Z]\.)+)\b/g, "$1#$2")
+    .replace(/\b(Mr.) ([A-Z][a-z]+)\b/g, "$1#$2")
+    .match(/"?[A-Z].+?\.(?:(?= "?[A-Z])|$)/g)
+    .map((fact) => {
+      return fact.replace(/(.+?)#(.+?)/g, "$1 $2");
+    });
 
   facts.forEach((fact) => {
-    console.debug(`Fact: ${fact}`);
     builder.processFact(fact.trim());
   });
-
-  console.log("final data", builder.data);
 
   return oldBuildModel(builder.data);
 }
