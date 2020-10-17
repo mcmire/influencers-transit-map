@@ -1,38 +1,41 @@
-import React from "react";
+import React, { useState } from "react";
 import colorStringify from "color-stringify";
 
 import styles from "./PeopleJourneys.css";
 
-function PersonTenure({ tenureView }) {
+function PersonTenure({ tenureView, togglePersonCareerRoute }) {
   return (
-    <>
+    <g style={{ "--color": tenureView.marker.color.toHex() }}>
       <circle
         cx={tenureView.marker.x}
         cy={tenureView.marker.y}
         r={tenureView.marker.radius}
-        fill={tenureView.marker.color.toHex()}
+        fill="var(--color)"
       />
       <text
-        className={`font-main ${styles.tenureName}`}
-        x={tenureView.name.x}
-        y={tenureView.name.y}
-        textAnchor="end"
+        className={`font-main ${styles.tenure}`}
+        onClick={togglePersonCareerRoute}
       >
-        {tenureView.name.label}
+        <tspan
+          className={`font-main ${styles.tenureName}`}
+          x={tenureView.name.x}
+          y={tenureView.name.y}
+        >
+          {tenureView.name.label}
+        </tspan>
+        <tspan
+          className={`font-main ${styles.tenureRoles}`}
+          x={tenureView.name.x}
+          y={tenureView.roles.y}
+        >
+          {tenureView.roles.label}
+        </tspan>
       </text>
-      <text
-        className={`font-main ${styles.tenureRoles}`}
-        x={tenureView.roles.x}
-        y={tenureView.roles.y}
-        textAnchor="end"
-      >
-        {tenureView.roles.label}
-      </text>
-    </>
+    </g>
   );
 }
 
-function PersonCareerRoute({ personView }) {
+function PersonCareerRoute({ personView, isVisible }) {
   const points = personView.career.companyTenures.flatMap((tenure) => {
     return [tenure.marker, tenure.extension];
   });
@@ -52,7 +55,7 @@ function PersonCareerRoute({ personView }) {
     .join(" ");
 
   return (
-    <g opacity={0.5}>
+    <g opacity={isVisible ? 0.5 : 0}>
       <path
         key={`career-route-${personView.id}-1`}
         d={d}
@@ -61,6 +64,7 @@ function PersonCareerRoute({ personView }) {
         strokeLinecap="round"
         strokeLinejoin="round"
         fill="none"
+        pointerEvents="none"
       />
       <path
         key={`career-route-${personView.id}-2`}
@@ -70,23 +74,32 @@ function PersonCareerRoute({ personView }) {
         strokeLinecap="round"
         strokeLinejoin="round"
         fill="none"
+        pointerEvents="none"
       />
     </g>
   );
 }
 
-function PersonGroup({ personView }) {
+function PersonGroup({
+  personView,
+  isPersonCareerRouteVisible,
+  togglePersonCareerRouteFor,
+}) {
   return (
     <g>
       <PersonCareerRoute
         key={`career-route-${personView.id}`}
         personView={personView}
+        isVisible={isPersonCareerRouteVisible}
       />
       {personView.career.companyTenures.map((tenureView, index) => {
         return (
           <PersonTenure
             key={`tenure-${tenureView.id}-${index}`}
             tenureView={tenureView}
+            togglePersonCareerRoute={() =>
+              togglePersonCareerRouteFor(personView)
+            }
           />
         );
       })}
@@ -95,10 +108,32 @@ function PersonGroup({ personView }) {
 }
 
 export default function PeopleJourneys({ view }) {
+  const [visiblePersonViewsById, setVisiblePersonViewsById] = useState({});
+  const togglePersonCareerRouteFor = (personView) => {
+    if (visiblePersonViewsById[personView.id]) {
+      setVisiblePersonViewsById({
+        ...visiblePersonViewsById,
+        [personView.id]: false,
+      });
+    } else {
+      setVisiblePersonViewsById({
+        ...visiblePersonViewsById,
+        [personView.id]: true,
+      });
+    }
+  };
+
   return (
     <>
       {view.people.map((personView) => {
-        return <PersonGroup key={personView.id} personView={personView} />;
+        return (
+          <PersonGroup
+            key={personView.id}
+            personView={personView}
+            isPersonCareerRouteVisible={visiblePersonViewsById[personView.id]}
+            togglePersonCareerRouteFor={togglePersonCareerRouteFor}
+          />
+        );
       })}
     </>
   );

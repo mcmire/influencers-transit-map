@@ -1,7 +1,16 @@
 .root {
 }
 
-.tenureName {
+.tenure {
+  text-anchor: end;
+  cursor: pointer;
+}
+
+.tenure:hover {
+  text-shadow: 0 0 20px var(--color);
+}
+
+.tenureName:hover {
 }
 
 .tenureRoles {
