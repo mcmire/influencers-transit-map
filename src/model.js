@@ -30,14 +30,6 @@ const people = [
     name: "Brian Posehn",
   },
   {
-    id: "steve-carell",
-    name: "Steve Carell",
-  },
-  {
-    id: "jon-stewart",
-    name: "Jon Stewart",
-  },
-  {
     id: "john-oliver",
     name: "John Oliver",
   },
@@ -85,18 +77,25 @@ const people = [
 ];
 
 const model = `
+Second City/Chris Farley is a source with URL "https://www.secondcity.com/people/other/chris-farley/".
+Sketch Anatomy/Brian Stack is a source with URL "https://web.archive.org/web/20150913175453/http://splitsider.com/2014/09/sketch-anatomy-brian-stack-on-the-traveling-salesman-and-his-many-other-conan-characters".
 Wikipedia/Ambiguously Gay Duo is a source with URL "https://en.wikipedia.org/wiki/The_Ambiguously_Gay_Duo".
+Wikipedia/Brian Stack is a source with URL "https://en.wikipedia.org/wiki/Brian_Stack".
+Wikipedia/Chris Farley is a source with URL "https://en.wikipedia.org/wiki/Chris_Farley".
 Wikipedia/Colbert is a source with URL "https://en.wikipedia.org/wiki/Stephen_Colbert".
 Wikipedia/Conan is a source with URL "https://en.wikipedia.org/wiki/Conan_O%27Brien".
 Wikipedia/David Cross is a source with URL "https://en.wikipedia.org/wiki/David_Cross".
 Wikipedia/Greg Daniels is a source with URL "https://en.wikipedia.org/wiki/Greg_Daniels".
+Wikipedia/Jon Stewart is a source with URL "https://en.wikipedia.org/wiki/Jon_Stewart".
 Wikipedia/Louis C.K. is a source with URL "https://en.wikipedia.org/wiki/Louis_C.K.".
 Wikipedia/Odenkirk is a source with URL "https://en.wikipedia.org/wiki/Bob_Odenkirk".
 Wikipedia/Pamela Adlon is a source with URL "https://en.wikipedia.org/wiki/Pamela_Adlon".
 Wikipedia/Parks and Rec is a source with URL "https://en.wikipedia.org/wiki/Parks_and_Recreation".
 Wikipedia/Smigel is a source with URL "https://en.wikipedia.org/wiki/Robert_Smigel".
+Wikipedia/Steve Carell is a source with URL "https://en.wikipedia.org/wiki/Steve_Carell".
 Wikipedia/The Office is a source with URL "https://en.wikipedia.org/wiki/The_Office_(American_TV_series)".
 
+The Ark Theater (Madison, WI) is an organization. "Ark Theater" is short for The Ark Theater (Madison, WI).
 Arrested Development is a show.
 Better Call Saul is a show.
 Boston comedy scene is a scene.
@@ -106,6 +105,7 @@ Conan is a show.
 Exit 57 is a show.
 Get a Life is a show.
 Happy Happy Good Show is a show.
+ImprovOlympic is an organization.
 Late Night with Conan O'Brien is a show.
 Louie is a show.
 Lucky Louie is a show.
@@ -120,10 +120,12 @@ The Ambiguously Gay Duo is a show.
 The Ben Stiller Show is a show.
 The Chris Rock Show is a show.
 The Colbert Report is a show.
+The Comedy Cellar is a club.
 The Daily Show is a show.
 The Dana Carvey Show is a show.
 The Dennis Miller Show is a show.
 The Harvard Lampoon is an organization. When displaying The Harvard Lampoon, use "*Harvard Lampoon*".
+The Jon Stewart Show is a show.
 The King of the Hill is a show.
 The Late Show with Stephen Colbert is a show.
 The Office is a show.
@@ -157,13 +159,13 @@ Greg Daniels was the co-creator and showrunner of Parks and Rec between 2009 and
 Greg Daniels was the showrunner of The Office in 2013 (sources: Wikipedia/Greg Daniels, Wikipedia/The Office).
 
 Stephen Colbert is a person. "Colbert" is short for Stephen Colbert.
-Colbert was a performer at Second City Chicago from 1986 to 1995 (source: Wikipedia/Colbert).
+Colbert was a performer at Second City Chicago from 1987 to 1995 (source: Wikipedia/Colbert, Wikipedia/Chris Farley).
 Colbert was a writer on Exit 57 between 1995 and 1996 (source: Wikipedia/Colbert).
 Colbert was a performer and writer for the Dana Carvey Show in 1996 (source: Wikipedia/Colbert).
 Colbert was a writer for SNL in 1996 (source: Wikipedia/Colbert).
-Colbert was a writer and actor for the Ambiguously Gay Duo between 1996 and 2011 (source: Wikipedia/Ambiguously Gay Duo).
+Colbert was a writer and voice actor for the Ambiguously Gay Duo between 1996 and 2011 (source: Wikipedia/Ambiguously Gay Duo).
 Colbert was a writer and performer for Strangers with Candy between 1999 and 2000 (source: Wikipedia/Colbert).
-Colbert was a writer and performer for the Daily Show between 1997 and 2005 (source: Wikipedia/Colbert).
+Colbert was a writer and correspondent for the Daily Show between 1997 and 2005 (source: Wikipedia/Colbert).
 Colbert was the creator, host, and writer for the Colbert Report between 2005 and 2014 (source: Wikipedia/Colbert).
 Colbert has been the creator, host, and writer for the Late Show with Stephen Colbert since 2015 (source: Wikipedia/Colbert).
 
@@ -186,9 +188,9 @@ Robert Smigel is a person. "Smigel" is short for Robert Smigel.
 Smigel was a student and performer for Second City Chicago from 1983 to 1985 (source: Wikipedia/Smigel).
 Smigel was a writer on SNL from 1985 to 1993 (source: Wikipedia/Smigel).
 Smigel was a writer for Happy Happy Good Show in 1988 (source: Wikipedia/Smigel).
-Smigel was head writer for Late Night with Conan O'Brien from 1992 to 1996 (source: Wikipedia/Smigel).
+Smigel was head writer for Late Night with Conan O'Brien from 1992 to 1998? (source: Wikipedia/Smigel, Sketch Anatomy/Brian Stack).
 Smigel was a writer and performer for the Dana Carvey Show in 1996 (source: Wikipedia/Smigel).
-Smigel was a writer and actor for the Ambiguously Gay Duo between 1996 and 2011 (source: Wikipedia/Smigel).
+Smigel was a writer and voice actor for the Ambiguously Gay Duo between 1996 and 2011 (source: Wikipedia/Smigel).
 
 David Cross is a person.
 David Cross was a comic at Catch a Rising Star between 1990 and 1993 (source: Wikipedia/David Cross).
@@ -211,6 +213,29 @@ Pamela Adlon is a person.
 Pamela Adlon was a voice actor on King of the Hill between 1997 and 2010 (source: Wikipedia/Pamela Adlon).
 Pamela Adlon was an actor for Lucky Louie in 2006 (source: Wikipedia/Pamela Adlon).
 Pamela Adlon was an actor and producer for Louie between 2010 and 2015 (source: Wikipedia/Pamela Adlon).
+
+Brian Stack is a person.
+Brian Stack was a performer at the Ark Theater between 1987 and 1991? (sources: Wikipedia/Brian Stack, Sketch Anatomy/Brian Stack).
+Brian Stack was a performer at ImprovOlympic between 1991 and 1993 (sources: Wikipedia/Brian Stack, Sketch Anatomy/Brian Stack).
+Brian Stack was a performer at the Second City Chicago between 1993 and 1997 (sources: Wikipedia/Brian Stack, Sketch Anatomy/Brian Stack).
+Brian Stack was a writer for Late Night with Conan O'Brien between 1997 and 2015 (source: Wikipedia/Brian Stack).
+
+Chris Farley is a person.
+Chris Farley was a performer at the Ark Theater in 1987 (source: Wikipedia/Chris Farley, Second City/Chris Farley).
+Chris Farley was a performer at Second City Chicago between 1987 and 1991 (source: Second City/Chris Farley).
+Chris Farley was a writer and performer for SNL between 1990 and 1995 (source: Wikipedia/Chris Farley).
+
+Steve Carell is a person.
+Steve Carell was a performer at Second City Chicago in 1991 (source: Wikipedia/Steve Carell).
+Steve Carell was a writer and actor for the Dana Carvey Show in 1996 (source: Wikipedia/Steve Carell).
+Steve Carell was a writer and voice actor for the Ambiguously Gay Duo between 1996 and 2011 (source: Wikipedia/Ambiguously Gay Duo).
+Steve Carell was a correspondent for The Daily Show from 1999 to 2005 (source: Wikipedia/Steve Carell).
+Steve Carell was an actor in and writer for the Office from 2005 to 2013 (source: Wikipedia/Steve Carell).
+
+Jon Stewart is a person.
+Jon Stewart was a comic at the Comedy Cellar from 1987? to 1989 (source: Wikipedia/Jon Stewart).
+Jon Stewart was the host of The Jon Stewart Show from 1993 to 1995 (source: Wikipedia/Jon Stewart).
+Jon Stewart was the host of The Daily Show from 1999 to 2015 (source: Wikipedia/Jon Stewart).
 `;
 
 export default model;

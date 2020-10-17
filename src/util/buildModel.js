@@ -196,13 +196,13 @@ class ModelBuilder {
     let startDate, endDate, rolesAtCompany;
 
     const match1 = rolesAtCompanyDuringTimeframe.match(
-      / (?:from (?<startDate1>.+?) to (?<endDate1>.+?)|between (?<startDate2>.+?) and (?<endDate2>.+?)|since (?<startDate3>.+?))$/
+      / (?:from (?<startDate1>.+?)\?? to (?<endDate1>.+?)\??|between (?<startDate2>.+?)\?? and (?<endDate2>.+?)\??|since (?<startDate3>.+?)\??)$/
     );
 
     if (match1 == null) {
       // "in" is often read too early ("actor in ...") so parse this separately
       const match2 = rolesAtCompanyDuringTimeframe.match(
-        / in (?<startDate>.+?)$/
+        / in (?<startDate>.+?)\??$/
       );
 
       if (match2 == null) {
@@ -211,7 +211,7 @@ class ModelBuilder {
 
       return {
         startDate: match2.groups.startDate,
-        endDate: null,
+        endDate: match2.groups.startDate,
         rolesAtCompany: rolesAtCompanyDuringTimeframe
           .slice(0, match2.index)
           .trim(),
@@ -221,9 +221,11 @@ class ModelBuilder {
         startDate:
           match1.groups.startDate1 ??
           match1.groups.startDate2 ??
-          match1.groups.startDate3 ??
-          match1.groups.startDate4,
-        endDate: match1.groups.endDate1 ?? match1.groups.endDate2,
+          match1.groups.startDate3,
+        endDate:
+          match1.groups.startDate3 != null
+            ? new Date()
+            : match1.groups.endDate1 ?? match1.groups.endDate2,
         rolesAtCompany: rolesAtCompanyDuringTimeframe
           .slice(0, match1.index)
           .trim(),
