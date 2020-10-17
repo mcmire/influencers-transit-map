@@ -10,43 +10,6 @@ import {
 
 import parseDateString, { canParseDateString } from "./parseDateString";
 
-function oldBuildModel(data) {
-  const companies = cloneDeep(data.companies);
-  const people = cloneDeep(data.people);
-  const relationships = cloneDeep(data.relationships);
-
-  const companiesById = keyBy(companies, "id");
-  const peopleById = keyBy(people, "id");
-  const relationshipsByCompanyId = groupBy(relationships, "company.id");
-  const relationshipsByPersonId = groupBy(relationships, "person.id");
-
-  companies.forEach((company) => {
-    company.relationships = relationshipsByCompanyId[company.id] ?? [];
-  });
-
-  people.forEach((person) => {
-    person.relationships = relationshipsByPersonId[person.id] ?? [];
-  });
-
-  relationships.forEach((relationship) => {
-    relationship.company = isPlainObject(relationship.company)
-      ? relationship.company
-      : companiesById[relationship.company];
-    relationship.person = isPlainObject(relationship.person)
-      ? relationship.person
-      : peopleById[relationship.person];
-    relationship.dateRange = {
-      start: parseDateString(relationship.dateRange.start),
-      end:
-        relationship.dateRange.end != null
-          ? parseDateString(relationship.dateRange.end)
-          : new Date(),
-    };
-  });
-
-  return { companies, people, relationships };
-}
-
 class ModelBuilder {
   static PROCESSORS = [
     [/^(.+) is a source with URL "(.+?)"\.$/, "processNewSourceFact"],
@@ -174,6 +137,43 @@ class ModelBuilder {
       endDate,
       sourceDescriptors,
     });
+  }
+
+  build() {
+    const companies = cloneDeep(this.data.companies);
+    const people = cloneDeep(this.data.people);
+    const relationships = cloneDeep(this.data.relationships);
+
+    const companiesById = keyBy(companies, "id");
+    const peopleById = keyBy(people, "id");
+    const relationshipsByCompanyId = groupBy(relationships, "company.id");
+    const relationshipsByPersonId = groupBy(relationships, "person.id");
+
+    companies.forEach((company) => {
+      company.relationships = relationshipsByCompanyId[company.id] ?? [];
+    });
+
+    people.forEach((person) => {
+      person.relationships = relationshipsByPersonId[person.id] ?? [];
+    });
+
+    relationships.forEach((relationship) => {
+      relationship.company = isPlainObject(relationship.company)
+        ? relationship.company
+        : companiesById[relationship.company];
+      relationship.person = isPlainObject(relationship.person)
+        ? relationship.person
+        : peopleById[relationship.person];
+      relationship.dateRange = {
+        start: parseDateString(relationship.dateRange.start),
+        end:
+          relationship.dateRange.end != null
+            ? parseDateString(relationship.dateRange.end)
+            : new Date(),
+      };
+    });
+
+    return { companies, people, relationships };
   }
 
   #findProcessorFor(fact) {
@@ -366,5 +366,5 @@ export default function buildModel(factsString) {
     builder.processFact(fact.trim());
   });
 
-  return oldBuildModel(builder.data);
+  return builder.build();
 }
