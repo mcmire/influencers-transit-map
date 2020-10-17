@@ -4,8 +4,8 @@ import Color from "../Color";
 import emsToPixels from "../emsToPixels";
 
 function sortAndFilterCompanies(companies) {
-  return sortBy(
-    companies.map((company) => {
+  const companiesWithRelationships = companies
+    .map((company) => {
       return {
         ...company,
         relationships: sortBy(company.relationships, (relationship) => {
@@ -14,21 +14,24 @@ function sortAndFilterCompanies(companies) {
           return { ...relationship, index: relationshipIndex };
         }),
       };
-    }),
+    })
+    .filter((company) => {
+      return company.relationships.length > 0;
+    });
+  return sortBy(companiesWithRelationships, [
     (company) => {
       return min(
         company.relationships.map((relationship) =>
           relationship.dateRange.start.getTime()
         )
       );
-    }
-  )
-    .filter((company) => {
-      return company.relationships.length > 0;
-    })
-    .map((company, companyIndex) => {
-      return { ...company, index: companyIndex };
-    });
+    },
+    (company) => {
+      return company.name.replace(/^[Tt]he /, "");
+    },
+  ]).map((company, companyIndex) => {
+    return { ...company, index: companyIndex };
+  });
 }
 
 function buildPersonViews(people) {

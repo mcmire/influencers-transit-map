@@ -85,56 +85,55 @@ const people = [
 ];
 
 const model = `
-Wikipedia/Conan is a source with URL "https://en.wikipedia.org/wiki/Conan_O%27Brien".
-Wikipedia/Greg Daniels is a source with URL "https://en.wikipedia.org/wiki/Greg_Daniels".
-Wikipedia/The Office is a source with URL "https://en.wikipedia.org/wiki/The_Office_(American_TV_series)".
-Wikipedia/Parks and Rec is a source with URL "https://en.wikipedia.org/wiki/Parks_and_Recreation".
-Wikipedia/Colbert is a source with URL "https://en.wikipedia.org/wiki/Stephen_Colbert".
-Wikipedia/Odenkirk is a source with URL "https://en.wikipedia.org/wiki/Bob_Odenkirk".
-Wikipedia/Smigel is a source with URL "https://en.wikipedia.org/wiki/Robert_Smigel".
 Wikipedia/Ambiguously Gay Duo is a source with URL "https://en.wikipedia.org/wiki/The_Ambiguously_Gay_Duo".
+Wikipedia/Colbert is a source with URL "https://en.wikipedia.org/wiki/Stephen_Colbert".
+Wikipedia/Conan is a source with URL "https://en.wikipedia.org/wiki/Conan_O%27Brien".
 Wikipedia/David Cross is a source with URL "https://en.wikipedia.org/wiki/David_Cross".
+Wikipedia/Greg Daniels is a source with URL "https://en.wikipedia.org/wiki/Greg_Daniels".
 Wikipedia/Louis C.K. is a source with URL "https://en.wikipedia.org/wiki/Louis_C.K.".
+Wikipedia/Odenkirk is a source with URL "https://en.wikipedia.org/wiki/Bob_Odenkirk".
 Wikipedia/Pamela Adlon is a source with URL "https://en.wikipedia.org/wiki/Pamela_Adlon".
+Wikipedia/Parks and Rec is a source with URL "https://en.wikipedia.org/wiki/Parks_and_Recreation".
+Wikipedia/Smigel is a source with URL "https://en.wikipedia.org/wiki/Robert_Smigel".
+Wikipedia/The Office is a source with URL "https://en.wikipedia.org/wiki/The_Office_(American_TV_series)".
 
-# TODO: Reordering this list changes the graph?
-The Harvard Lampoon is an organization. When displaying The Harvard Lampoon, use "*Harvard Lampoon*".
-Not Necessarily the News is a show.
-The Wilton North Report is a show.
-Saturday Night Live is a show. "SNL" is short for Saturday Night Live.
-The Simpsons is a show.
-The King of the Hill is a show.
-Late Night with Conan O'Brien is a show.
-The Tonight Show with Conan O'Brien is a show.
-Conan is a show.
-The Office is a show.
-Parks and Recreation is a show. "Parks and Rec" is short for Parks and Recreation.
-Second City Chicago is an organization.
-Exit 57 is a show.
-The Dana Carvey Show is a show.
-Strangers with Candy is a show.
-The Daily Show is a show.
-The Colbert Report is a show.
-The Late Show with Stephen Colbert is a show.
-Happy Happy Good Show is a show.
-Get a Life is a show.
-The Dennis Miller Show is a show.
-The Ben Stiller Show is a show.
-Mr. Show is a show.
-Breaking Bad is a show.
-Better Call Saul is a show.
-Tom Goes to the Mayor is a show.
-Tim and Eric Awesome Show, Great Job! is a show.
-W/ Bob and David is a show.
-The Ambiguously Gay Duo is a show.
-Catch a Rising Star is a club.
-Un-Cabaret is a club.
 Arrested Development is a show.
+Better Call Saul is a show.
 Boston comedy scene is a scene.
-The Chris Rock Show is a show.
-Pootie Tang is a movie.
-Lucky Louie is a show.
+Breaking Bad is a show.
+Catch a Rising Star is a club.
+Conan is a show.
+Exit 57 is a show.
+Get a Life is a show.
+Happy Happy Good Show is a show.
+Late Night with Conan O'Brien is a show.
 Louie is a show.
+Lucky Louie is a show.
+Mr. Show is a show.
+Not Necessarily the News is a show.
+Parks and Recreation is a show. "Parks and Rec" is short for Parks and Recreation.
+Pootie Tang is a movie.
+Saturday Night Live is a show. "SNL" is short for Saturday Night Live.
+Second City Chicago is an organization.
+Strangers with Candy is a show.
+The Ambiguously Gay Duo is a show.
+The Ben Stiller Show is a show.
+The Chris Rock Show is a show.
+The Colbert Report is a show.
+The Daily Show is a show.
+The Dana Carvey Show is a show.
+The Dennis Miller Show is a show.
+The Harvard Lampoon is an organization. When displaying The Harvard Lampoon, use "*Harvard Lampoon*".
+The King of the Hill is a show.
+The Late Show with Stephen Colbert is a show.
+The Office is a show.
+The Simpsons is a show.
+The Tonight Show with Conan O'Brien is a show.
+The Wilton North Report is a show.
+Tim and Eric Awesome Show, Great Job! is a show.
+Tom Goes to the Mayor is a show.
+Un-Cabaret is a club.
+W/ Bob and David is a show.
 
 Conan O'Brien is a person. "Conan" is short for Conan O'Brien.
 Conan was a writer for and president of the Harvard Lampoon between 1981 and 1985 (source: Wikipedia/Conan).
