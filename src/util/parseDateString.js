@@ -106,7 +106,10 @@ export default function parseDateString(value) {
   if (value instanceof Date) {
     return value;
   } else {
-    const result = findParserFor(value, DATE_STRING_PARSERS);
+    const result = findParserFor(
+      value.replace(/^some time in /, ""),
+      DATE_STRING_PARSERS
+    );
 
     if (result != null) {
       const parsedDate = result.parser(result.match);
@@ -119,5 +122,14 @@ export default function parseDateString(value) {
     } else {
       throw new Error(`Could not parse "${value}" as a date!`);
     }
+  }
+}
+
+export function canParseDateString(value) {
+  try {
+    parseDateString(value);
+    return true;
+  } catch (error) {
+    return false;
   }
 }

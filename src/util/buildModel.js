@@ -1,6 +1,14 @@
-import { cloneDeep, groupBy, isPlainObject, kebabCase, keyBy } from "lodash";
+import {
+  cloneDeep,
+  groupBy,
+  isEmpty,
+  isPlainObject,
+  kebabCase,
+  keyBy,
+  lastIndexOf,
+} from "lodash";
 
-import parseDateString from "./parseDateString";
+import parseDateString, { canParseDateString } from "./parseDateString";
 
 function oldBuildModel(data) {
   const companies = cloneDeep(data.companies);
@@ -53,12 +61,8 @@ class ModelBuilder {
     [/^"(.+)" is short for (.+)\.$/, "processAliasFact"],
     [/^(.+) is a person\.$/, "processNewPersonFact"],
     [
-      /^(.+) (?:was|has been) (.+?) (?:between|from) (?:some time in )?(.+?) (?:and|to) (?:some time in )?(.+?)(?: \(sources?: (.+)\))?\.$/,
-      "processNewRelationshipFactWithTwoDates",
-    ],
-    [
-      /^(.+) (?:was|has been) (.+?) (in|on|since|from) (?:some time in )?(.+?)(?: \(sources?: (.+)\))?\.$/,
-      "processNewRelationshipFactWithOneDate",
+      /^(?<personDescriptor>.+) (?:was|has been) (?<rolesAtCompanyDuringTimeframe>.+?)(?: \(sources?: (?<rawSources>.+)\))?\.$/,
+      "processNewRelationshipFact",
     ],
   ];
 
@@ -75,6 +79,12 @@ class ModelBuilder {
     const processorFindingResult = this.#findProcessorFor(fact);
 
     if (processorFindingResult != null) {
+      if (typeof this[processorFindingResult.processorName] !== "function") {
+        throw new Error(
+          `Could not find processor method: ${processorFindingResult.processorName}`
+        );
+      }
+
       const processorResult = this[processorFindingResult.processorName](
         fact,
         processorFindingResult.match
@@ -133,28 +143,37 @@ class ModelBuilder {
     });
   }
 
-  processNewRelationshipFactWithOneDate(fact, match) {
-    this.#processNewRelationshipFact(fact, [
-      null,
-      match[1], // person
-      match[2], // roles
-      match[3], // preposition
-      match[4], // start date
-      null, // end date
-      match[5], // sources
-    ]);
-  }
+  processNewRelationshipFact(fact, match) {
+    const personDescriptor = match.groups.personDescriptor;
+    const rolesAtCompanyDuringTimeframe =
+      match.groups.rolesAtCompanyDuringTimeframe;
+    const sourceDescriptors = this.#parseSources(match.groups.rawSources);
+    const {
+      startDate,
+      endDate,
+      rolesAtCompany,
+    } = this.#parseRolesAtCompanyDuringTimeframe(rolesAtCompanyDuringTimeframe);
 
-  processNewRelationshipFactWithTwoDates(fact, match) {
-    this.#processNewRelationshipFact(fact, [
-      null,
-      match[1], // person
-      match[2], // roles
-      null, // preposition
-      match[3], // start date
-      match[4], // end date
-      match[5], // sources
-    ]);
+    if (!canParseDateString(startDate)) {
+      throw new Error("start date doesn't look right");
+    }
+
+    if (endDate != null && !canParseDateString(endDate)) {
+      throw new Error("end date doesn't look right");
+    }
+
+    const { roles, companyDescriptor } = this.#parseRolesAtCompany(
+      rolesAtCompany
+    );
+
+    this.#processNewRelationshipFact({
+      personDescriptor,
+      roles,
+      companyDescriptor,
+      startDate,
+      endDate,
+      sourceDescriptors,
+    });
   }
 
   #findProcessorFor(fact) {
@@ -169,54 +188,74 @@ class ModelBuilder {
     return null;
   }
 
-  #processNewRelationshipFact(fact, match1) {
-    const personDescriptor = match1[1];
-    const startDate = match1[4];
-    const endDate = match1[3] === "since" ? null : match1[5] ?? match1[4];
-    const sourceDescriptors = match1[6] == null ? [] : match1[6].split(/,[ ]+/);
-    let companyDescriptor;
-    let rawRoles;
-
-    const match2 = match1[2].match(/^(.+?) (?:the )?([A-Z].+)$/);
-
-    if (match2 != null) {
-      companyDescriptor = match2[2];
-
-      if (/\b(?:, )?and\b/.test(match2[1])) {
-        const match3 = match2[1].match(/^(.+?) (?:for|of|on|at|within)$/);
-
-        if (match3 != null) {
-          rawRoles = match3[1].split(/\b(?:, )?and\b/);
-        } else {
-          debugger;
-          return false;
-        }
-      } else {
-        rawRoles = [match2[1]];
-      }
-    } else {
-      debugger;
-      return false;
-    }
-
-    const roles = rawRoles.map((clause) => {
-      return clause
-        .replace(/\b(?:an? |the )?\b/g, "")
-        .replace(/(?: (?:for|of|on|at|within))\b/, "")
-        .trim();
-    });
-
-    this.#_processNewRelationshipFact({
-      personDescriptor: personDescriptor,
-      roles: roles,
-      companyDescriptor: companyDescriptor,
-      startDate: startDate,
-      endDate: endDate,
-      sourceDescriptors: sourceDescriptors,
-    });
+  #parseSources(rawSources) {
+    return rawSources == null ? [] : rawSources.split(/,[ ]+/);
   }
 
-  #_processNewRelationshipFact({
+  #parseRolesAtCompanyDuringTimeframe(rolesAtCompanyDuringTimeframe) {
+    let startDate, endDate, rolesAtCompany;
+
+    const match1 = rolesAtCompanyDuringTimeframe.match(
+      / (?:from (?<startDate1>.+?) to (?<endDate1>.+?)|between (?<startDate2>.+?) and (?<endDate2>.+?)|since (?<startDate3>.+?))$/
+    );
+
+    if (match1 == null) {
+      // "in" is often read too early ("actor in ...") so parse this separately
+      const match2 = rolesAtCompanyDuringTimeframe.match(
+        / in (?<startDate>.+?)$/
+      );
+
+      if (match2 == null) {
+        throw new Error("Could not parse roles + company + timeframe");
+      }
+
+      return {
+        startDate: match2.groups.startDate,
+        endDate: null,
+        rolesAtCompany: rolesAtCompanyDuringTimeframe
+          .slice(0, match2.index)
+          .trim(),
+      };
+    } else {
+      return {
+        startDate:
+          match1.groups.startDate1 ??
+          match1.groups.startDate2 ??
+          match1.groups.startDate3 ??
+          match1.groups.startDate4,
+        endDate: match1.groups.endDate1 ?? match1.groups.endDate2,
+        rolesAtCompany: rolesAtCompanyDuringTimeframe
+          .slice(0, match1.index)
+          .trim(),
+      };
+    }
+  }
+
+  #parseRolesAtCompany(rolesAtCompany) {
+    const match = rolesAtCompany.match(
+      /^(?<roles>.+? (?:for|of|on|at|with|within|in)) (?:the )?(?<companyDescriptor>[A-Z].+)$/
+    );
+
+    if (match == null) {
+      throw new Error("Could not parse roles + company");
+    }
+
+    const companyDescriptor = match.groups.companyDescriptor;
+    const roles = match.groups.roles
+      .replace(/, and /g, ", ")
+      .replace(/ and /g, ", ")
+      .split(/ |(,)/)
+      .filter((word) => !isEmpty(word))
+      .filter(
+        (word) => !/^(?:for|of|on|at|with|within|in|the|a|an)$/.test(word)
+      )
+      .join(" ")
+      .split(" , ");
+
+    return { roles, companyDescriptor };
+  }
+
+  #processNewRelationshipFact({
     personDescriptor,
     companyDescriptor,
     roles,

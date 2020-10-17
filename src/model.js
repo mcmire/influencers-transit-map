@@ -179,11 +179,9 @@ Odenkirk was a writer for Late Night with Conan O'Brien from 1993 to 1994 (sourc
 Odenkirk was the co-creator of and a writer and performer for Mr. Show from 1995 to 1998 (source: Wikipedia/Odenkirk).
 Odenkirk was a executive producer and guest actor for Tom Goes to the Mayor between 2004 and 2006 (source: Wikipedia/Odenkirk).
 Odenkirk was a guest actor for Tim and Eric Awesome Show, Great Job! between 2007 and 2010 (source: Wikipedia/Odenkirk).
-# TODO: Odenkirk was an actor in Breaking Bad between 2009 and 2013 (source: Wikipedia/Odenkirk).
-Odenkirk was an actor for Breaking Bad between 2009 and 2013 (source: Wikipedia/Odenkirk).
+Odenkirk was an actor in Breaking Bad between 2009 and 2013 (source: Wikipedia/Odenkirk).
 Odenkirk was an executive producer, writer, and actor for W/ Bob and David in 2015 (source: Wikipedia/Odenkirk).
-# TODO: Odenkirk has been an actor in Better Call Saul since 2015 (source: Wikipedia/Odenkirk).
-Odenkirk has been an actor for Better Call Saul since 2015 (source: Wikipedia/Odenkirk).
+Odenkirk has been an actor in Better Call Saul since 2015 (source: Wikipedia/Odenkirk).
 
 Robert Smigel is a person. "Smigel" is short for Robert Smigel.
 Smigel was a student and performer for Second City Chicago from 1983 to 1985 (source: Wikipedia/Smigel).
